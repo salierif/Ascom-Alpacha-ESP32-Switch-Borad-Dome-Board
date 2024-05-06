@@ -8,6 +8,10 @@ void main_loop(){
     domehandlerloop();
     #endif
 
+    #ifdef COVERC
+    coverCLoop();
+    #endif
+
     #ifdef SWITCH
     switchLoop();
     #endif
@@ -24,8 +28,9 @@ void main_loop(){
     //get wifi uptime and handle reconnection
     if(WiFi.status() == WL_CONNECTED ){
         Global.wifi.reconnection.waitToReconnect = false;
-        if (currentMillis - Global.esp32.upTime.previousMillis > Global.upTimeInterval){
+        if (currentMillis - Global.wifi.upTime.previousMillis > Global.upTimeInterval){
             Global.wifi.upTime.minutes +=1;
+            Global.wifi.upTime.previousMillis = currentMillis;
         }
     } else {
         Global.wifi.upTime.previousMillis = currentMillis;
@@ -34,6 +39,8 @@ void main_loop(){
             Global.wifi.reconnection.lastMillis = currentMillis;
         }
         if (currentMillis - Global.wifi.reconnection.lastMillis >= Global.wifi.reconnection.intervall) {
+            Global.wifi.reconnection.lastMillis = currentMillis;
+            Serial.println("wifi lost, reconnection...");
             WiFi.disconnect();
             WiFi.reconnect();
             Global.wifi.upTime.minutes = 0;

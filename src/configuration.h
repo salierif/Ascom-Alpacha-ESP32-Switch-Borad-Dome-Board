@@ -27,6 +27,7 @@ void saveConfig(){
     Config.save.coverC.execute = false;
 
     if(Config.save.coverC.restartNeeded || Config.save.dome.restartNeeded || Config.save.switches.restartNeeded){
+        Serial.println("restarting...");
         ESP.restart();
     }
 

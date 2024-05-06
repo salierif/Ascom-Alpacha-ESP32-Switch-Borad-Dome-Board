@@ -3,7 +3,7 @@
 
 void switchWebServer(){
 
-    server.on("/switch/cmd",             HTTP_PUT, [](AsyncWebServerRequest *request) {
+    server.on("/api/switch/cmd",             HTTP_PUT, [](AsyncWebServerRequest *request) {
         int id = -1;
         int value = -1;
         if (request->hasParam("id")){
@@ -18,14 +18,14 @@ void switchWebServer(){
             request->send(200, "application/json", "{\"error\" : \"Missing Value\"}");
             return;
         }
-        if (id < 1 || id >= Config.switches.configuredSwitch){ 
+        if (id < 0 || id > Config.switches.configuredSwitch){ 
             request->send(200, "application/json", "{\"error\" : \"ID Out of Range\"}"); return;
         }
-        if (Switch[id].property.type != 1 || Switch[id].property.type != 3){ 
+        if (Switch[id].property.type != 1 &&  Switch[id].property.type != 3){ 
             request->send(200, "application/json", "{\"error\" : \"Switch cannot be setted\"}"); 
             return;
         }
-        if (value < Switch[id].property.minValue || value > Switch[id].property.maxValue){
+        if (!validateSwitchValue(id,value)){
             request->send(200, "application/json", "{\"error\" : \"Value outside limits\"}");
             return;
         }
@@ -36,20 +36,22 @@ void switchWebServer(){
     });
 
 
-    server.on("/switch/status",                HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/api/switch/",                HTTP_GET, [](AsyncWebServerRequest *request) {
     int i;
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     response->printf("{");
     response->print("\"switches\": [");
-    for (i=0;i<Config.switches.configuredSwitch;i++){
+    for (i=0;i<=Config.switches.configuredSwitch;i++){
         response->print("{\"id\":");
         response->print(i);
         response->print(",\"name\":\"");
         response->print(Switch[i].Name);
         response->print("\",\"description\":\"");
         response->print(Switch[i].Description);
-        response->print(",\"actualValue\":");
+        response->print("\",\"actualValue\":");
         response->print(Switch[i].readValue);
+        response->print(",\"type\":");
+        response->print(Switch[i].property.type);
         response->print(",\"min\":");
         response->print(Switch[i].property.minValue);
         response->print(",\"max\":");
@@ -57,7 +59,7 @@ void switchWebServer(){
         response->print(",\"step\":");
         response->print(Switch[i].property.Step);
         response->print("}");
-        if(i != Config.switches.configuredSwitch - 1 ){
+        if(i != Config.switches.configuredSwitch ){
             response->printf(",");
         }
     }
@@ -66,7 +68,7 @@ void switchWebServer(){
     });
 
 
-    AsyncCallbackJsonWebHandler *switchConfig = new AsyncCallbackJsonWebHandler("/switchconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
+    AsyncCallbackJsonWebHandler *switchConfig = new AsyncCallbackJsonWebHandler("/api/switch/saveconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
         JsonDocument doc;
         int i=0;
         int x=0;
@@ -112,12 +114,12 @@ void switchWebServer(){
     });
     server.addHandler(switchConfig);
     
-        server.on("/switch/getconfig",                HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/api/switch/getconfig",                HTTP_GET, [](AsyncWebServerRequest *request) {
         int i;
         AsyncResponseStream *response = request->beginResponseStream("application/json");
         response->print("{");
         response->print("\"switches\":[");
-        for(i=0;i<Config.switches.configuredSwitch;i++){
+        for(i=0;i<=Config.switches.configuredSwitch;i++){
             response->print("{\"name\":\"");
             response->print(Switch[i].Name);
             response->print("\",\"desc\":\"");
@@ -127,7 +129,7 @@ void switchWebServer(){
             response->print(",\"pin\":");
             response->print(Switch[i].pin);
             response->print("}");
-            if (i != Config.switches.configuredSwitch - 1 ){
+            if (i != Config.switches.configuredSwitch){
                 response->print(",");
             }
         }    

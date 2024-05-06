@@ -12,7 +12,7 @@ void AlpacaHeaderSchema(AsyncResponseStream *response, AlpacaCommonData paramete
   response->print(F("{\"ClientTransactionID\":"));
   response->print(parameters.clientTransactionID);
   response->print(F(",\"ServerTransactionID\":"));
-  response->print(parameters.clientTransactionID);
+  response->print(parameters.serverTransactionID);
   response->print(F(","));
 }
 

@@ -2,8 +2,7 @@
 #define SWITCH_HAND
 
 bool validateSwitchValue(int id,int value){
-
-  if(value >= Switch[id].property.minValue && value <= Switch[id].property.minValue){
+  if(value >= Switch[id].property.minValue && value <= Switch[id].property.maxValue){
     return true;
   }
 
@@ -96,6 +95,7 @@ void initSwitchConfig(){
           break;
         }
     }
+    
     file.close();
     Config.read.switches.isValid = true;
     switchSetup();
@@ -125,8 +125,7 @@ void saveSwitchConfig(){
 
 
 void switchLoop(){
-  
-  for(int i=0;i<Config.switches.configuredSwitch;i++){
+  for(int i=0;i<=Config.switches.configuredSwitch;i++){
     int type = Switch[i].property.type;
     switch(type){
     

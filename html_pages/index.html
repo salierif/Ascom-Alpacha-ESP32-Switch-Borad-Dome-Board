@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -127,22 +128,22 @@
 
             <div class="card_command">
 
-              <template x-if="swi.type == 1 && swi.canBeHandle == 1">
+              <template x-if="swi.type == 3">
                 <input @change="setAnalogSwValue(swi.id,$event)" type="range" x-bind:min="swi.min" x-bind:max="swi.max" x-bind:value="swi.actualValue" class="py-2" />
               </template>
   
-              <template x-if="swi.type == 0 && swi.canBeHandle == 1">
+              <template x-if="swi.type == 1">
                 <div class="flex justify-center">
                   <button @click="setDigitalSwValue(swi.id,1)" class="button button_green">ON</button>
                   <button @click="setDigitalSwValue(swi.id,0)" class="button ml-5 button_red">OFF</button>
                 </div>
               </template>
   
-              <template x-if="swi.type == 1 && swi.canBeHandle == 0">
+              <template x-if="swi.type == 4">
                 <input type="range" x-bind:min="swi.min" x-bind:max="swi.max" x-bind:value="swi.actualValue" class="py-2 cursor-not-allowed" />
               </template>
   
-              <template x-if="swi.type == 0 && swi.canBeHandle == 0">
+              <template x-if="swi.type == 2">
                 <div class="flex justify-center">
                   <button class="button bg-slate-500 cursor-not-allowed">ON</button>
                   <button class="button bg-slate-500 ml-5 cursor-not-allowed">OFF</button>
@@ -208,6 +209,12 @@
   <script>
     function globalData() {
       return {
+        exist: {
+          dome : false,
+          switch: false,
+          coverc: false
+        },
+        ready :false,
         dome: [],
         cover: [],
         switches: [],
@@ -215,34 +222,92 @@
         upTimeWiFi: 0,
         freeHeap: 0,
         minFreeHeap: 0,
+
         reload() {
+          this.ready = false;
           this.dome = [];
           this.switches = [];
           this.cover = [];
         },
-        updateData(){
-          fetch('/status')
+
+        getDomeData(){
+          if (this.exist.dome){
+            fetch('/api/dome')
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome;
+              })
+            .catch(error => console.log(error))
+            .finally(() => this.getSwitchData());
+          } else {
+            this.getSwitchData()
+          }
+        },
+
+        getSwitchData(){
+          if (this.exist.switch){ 
+          fetch('/api/switch')
+            .then(response => response.json())
+            .then(response => {
+              this.switches = response.switches;
+              })
+            .catch(error => console.log(error))
+            .finally(() => this.getCoverData());
+            } else {
+              this.getCoverData()
+            }
+        },
+
+        getCoverData(){
+          if (this.exist.coverc) {
+            fetch('/api/coverc')
+            .then(response => response.json())
+            .then(response => {
               this.cover = response.cover;
-              this.switches =  response.switches;
+              })
+            .catch(error => console.log(error))
+            .finally(() => setTimeout(() => {this.getDomeData()}, 3000));
+          } else {
+            setTimeout(() => {this.getDomeData()}, 3000);
+          }
+
+          },
+
+        updateData(){
+          fetch('http://172.20.10.5/status')
+            .then(response => response.json())
+            .then(response => {
               this.upTime = this.toHoursAndMinutes(response.upTime);
               this.upTimeWiFi = this.toHoursAndMinutes(response.upWiFiTime);
               this.freeHeap = ((response.freeHeap * 100) / response.totalHeap).toFixed(2);
               this.minFreeHeap = ((response.minFreeHeap * 100) / response.totalHeap).toFixed(2);
-
-              });
+              })
+            .catch(error => console.log(error))
         },
+
+        initData(){
+          fetch('http://172.20.10.5/status')
+            .then(response => response.json())
+            .then(response => {
+              this.exist.dome = response.dome
+              this.exist.switch = response.switch
+              this.exist.coverc = response.cover
+              this.upTime = this.toHoursAndMinutes(response.upTime);
+              this.upTimeWiFi = this.toHoursAndMinutes(response.upWiFiTime);
+              this.freeHeap = ((response.freeHeap * 100) / response.totalHeap).toFixed(2);
+              this.minFreeHeap = ((response.minFreeHeap * 100) / response.totalHeap).toFixed(2);
+              if(this.exist.dome || this.exist.switch || this.exist.coverc){ this.getDomeData() }
+              })
+            .catch(error => console.log(error))
+            .finally(() => setInterval(() => this.updateData(), 10000));
+        },
+
         init() {  
-          this.updateData();
-          setInterval(() => {
-                this.updateData();
-              }, 1000);
+          this.initData();
         },
 
         openShutter(){
-          fetch('/domecmd?cmd=1',{ method: 'PUT'})
+          fetch('/api/dome/cmd?cmd=1',{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                   this.dome.error = response.error;
@@ -250,7 +315,7 @@
         },
 
         closeShutter(){
-          fetch('/domecmd?cmd=2',{ method: 'PUT'})
+          fetch('/api/dome/cmd?cmd=2',{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                   this.dome.error = response.error;
@@ -258,7 +323,7 @@
         },
 
         haltShutter(){
-          fetch('/domecmd?cmd=3',{ method: 'PUT'})
+          fetch('/api/dome/cmd?cmd=3',{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                   this.dome.error = response.error;
@@ -266,7 +331,7 @@
         },
 
         coverCmd(value){
-          fetch('/covercmd?value='+value,{ method: 'PUT'})
+          fetch('http://172.20.10.5/api/coverc/cmd?value='+value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                   this.cover.error = response.error;
@@ -274,7 +339,7 @@
         },
 
         setDigitalSwValue(id,value){
-          fetch('/switchcmd?id='+id+'&value='+value,{ method: 'PUT'})
+          fetch('http://172.20.10.5/api/switch/cmd?id='+id+'&value='+value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                 if (response.done){
@@ -286,7 +351,7 @@
               });
         },
         setAnalogSwValue(id,event){
-          fetch('/switchcmd?id='+id+'&value='+event.target.value,{ method: 'PUT'})
+          fetch('/api/switch/cmd?id='+id+'&value='+event.target.value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
               if (response.done){
@@ -312,6 +377,8 @@
 
           return `${days} ${daysString}, ${hours} ${hoursString}, ${remainingMinutes} ${minutesString}`;
         }
+
+        
         
       }
     };

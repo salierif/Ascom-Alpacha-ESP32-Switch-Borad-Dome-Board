@@ -196,12 +196,45 @@
         reload() {
           this.dome = [];
           this.switches = [];
+          this.cover = [];
           relodRequest : 0;
           pinIdError:0;
           notices: [];
 		      visible: [];
         },
-        updateData(){fetch('/config').then(response => response.json()).then(response => {this.dome = response.dome; this.cover = response.cover; response.switches.forEach((element,index) => (this.switches.push(element)))});},
+
+        getDomeConfig(){
+          fetch('http://172.20.10.5/api/dome/getconfig')
+          .then(response => response.json())
+          .then(response => {
+            this.dome = response.dome;
+          });
+        },
+
+        getSwitchConfig(){
+          fetch('http://172.20.10.5/api/switch/getconfig')
+          .then(response => response.json())
+          .then(response => {
+            response.switches.forEach((element,index) => (
+              this.switches.push(element)
+            ))
+          });
+        },
+
+        getCoverCConfig(){
+          fetch('http://172.20.10.5/api/coverc/getconfig')
+          .then(response => response.json())
+          .then(response => {
+            this.cover = response.cover;
+          });
+        },
+        
+        updateData(){
+          this.getDomeConfig();
+          this.getSwitchConfig();
+          this.getCoverCConfig();
+        },
+
         init() {this.updateData()},
         validateString(event){ event.target.value = event.target.value.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, ''); },
         validatePinNumber(event){
@@ -235,7 +268,7 @@
               this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinhalt + " NON UTILIZZABILE come Output"});
               return;
             }
-            fetch('/domeconfig',{ 
+            fetch('http://172.20.10.5/api/dome/saveconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.dome)
@@ -275,7 +308,7 @@
           }
 
           if(error){ this.addToast({type:"error", text:"Errore di Validazione"}); return; }
-          fetch('/switchconfig',{ 
+          fetch('http://172.20.10.5/api/switch/saveconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.switches)

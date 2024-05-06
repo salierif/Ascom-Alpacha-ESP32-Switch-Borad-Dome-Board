@@ -54,19 +54,22 @@ void setup()
 
   #ifdef DOME
   initDomeConfig();
+  Serial.println("dome init done");
   #endif
 
   #ifdef SWITCH
   initSwitchConfig();
+  Serial.println("switch init done");
   #endif
 
   #ifdef COVERC
   initCoverCConfig();
+  Serial.println("cover init done");
   #endif
 
   Serial.println("Listening for discovery requests...");
   AsyncWiFiManager wifiManager(&server,&dns);
-  wifiManager.autoConnect("TeslaBoard");
+  wifiManager.autoConnect();
   Serial.print("Connect with IP Address: ");
   Serial.println(WiFi.localIP());
 
@@ -95,6 +98,7 @@ void setup()
   #ifdef DOME
   domeServer();
   #endif
+  
   #ifdef SWITCH
   switchServer();
   #endif
@@ -109,6 +113,7 @@ void setup()
   Alpserver.begin();
   ElegantOTA.begin(&server);
   server.begin();
+  Serial.println("setup done");
 }
 
 void loop(){
