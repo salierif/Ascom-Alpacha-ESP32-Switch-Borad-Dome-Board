@@ -89,8 +89,8 @@ void initSwitchConfig(){
             Switch[i].Description = elem["desc"].as<String>();
             Switch[i].pin = pin;
             Switch[i].property.type = type;
-            Config.switches.configuredSwitch = i;
             i++;
+            Config.switches.configuredSwitch = i;
         } else{
           break;
         }
@@ -118,6 +118,9 @@ void saveSwitchConfig(){
         if(i != _MAX_SWITCH_ID_ - 1){
             file.print(",");
         }
+        if (Switch[i].pin != 0 ){
+          Config.switches.configuredSwitch = i+ 1;    //avoid problems if delete one switch
+        }
     }
     file.print("]");
     file.close();
@@ -125,7 +128,7 @@ void saveSwitchConfig(){
 
 
 void switchLoop(){
-  for(int i=0;i<=Config.switches.configuredSwitch;i++){
+  for(int i=0;i<Config.switches.configuredSwitch;i++){
     int type = Switch[i].property.type;
     switch(type){
     

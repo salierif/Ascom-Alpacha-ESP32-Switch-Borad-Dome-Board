@@ -232,7 +232,7 @@
 
         getDomeData(){
           if (this.exist.dome){
-            fetch('/api/dome')
+            fetch('http://172.20.10.5/api/dome')
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome;
@@ -246,7 +246,7 @@
 
         getSwitchData(){
           if (this.exist.switch){ 
-          fetch('/api/switch')
+          fetch('http://172.20.10.5/api/switch')
             .then(response => response.json())
             .then(response => {
               this.switches = response.switches;
@@ -260,7 +260,7 @@
 
         getCoverData(){
           if (this.exist.coverc) {
-            fetch('/api/coverc')
+            fetch('http://172.20.10.5/api/coverc')
             .then(response => response.json())
             .then(response => {
               this.cover = response.cover;

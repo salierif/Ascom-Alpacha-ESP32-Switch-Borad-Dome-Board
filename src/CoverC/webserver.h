@@ -3,13 +3,7 @@
 
 void coverCWebServer(){
 
-    server.on("/api/coverc/",               HTTP_GET, [](AsyncWebServerRequest *request) {
-        AsyncResponseStream *response = request->beginResponseStream("application/json");
-        response->printf("{\"cover\":{ \"value\":");
-        response->print(coverC.actualValue);
-        response->printf("}}");
-        request->send(response);
-    });
+
 
     server.on("/api/coverc/cmd",             HTTP_PUT, [](AsyncWebServerRequest *request) {
         int value = -1;
@@ -47,6 +41,14 @@ void coverCWebServer(){
         AsyncResponseStream *response = request->beginResponseStream("application/json");
         response->print("{\"cover\":{ \"pin\":");
         response->print(Config.coverC.pin);
+        response->printf("}}");
+        request->send(response);
+    });
+
+    server.on("/api/coverc",               HTTP_GET, [](AsyncWebServerRequest *request) {
+        AsyncResponseStream *response = request->beginResponseStream("application/json");
+        response->printf("{\"cover\":{ \"value\":");
+        response->print(coverC.actualValue);
         response->printf("}}");
         request->send(response);
     });

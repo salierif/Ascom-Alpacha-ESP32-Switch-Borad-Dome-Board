@@ -34,7 +34,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else {
       AlpacaNoErrorSchema(response);
@@ -47,7 +47,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else {
       AlpacaNoErrorSchema(response);
@@ -60,7 +60,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else {
       AlpacaNoErrorSchema(response);
@@ -73,7 +73,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else {
       AlpacaNoErrorSchema(response);
@@ -86,7 +86,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else {
       AlpacaNoErrorSchema(response);
@@ -99,7 +99,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else {
       AlpacaNoErrorSchema(response);
@@ -116,7 +116,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else {
         AlpacaNoErrorSchema(response);
@@ -131,7 +131,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else {
         AlpacaNoErrorSchema(response);
@@ -152,7 +152,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else if(!AlpacaData.switches.stateExist || AlpacaData.switches.state < 0 || AlpacaData.switches.state > 1){
       response->printf("%s1025,%s\"State value not valid MIN:false MAX:true, %d given\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.state);
@@ -174,7 +174,7 @@ void SwitchAlpacaDevice(){
     GetAlpArguments(request);
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
-    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id > Config.switches.configuredSwitch){
+    if(!AlpacaData.switches.idExist || AlpacaData.switches.id < 0 || AlpacaData.switches.id >= Config.switches.configuredSwitch){
       response->printf("%s1025,%s\"The Switch %d doesn't exist\"}",Alp_ErrN,Alp_ErrM,AlpacaData.switches.id);
     } else if(!AlpacaData.switches.intValueExist || !validateSwitchValue(AlpacaData.switches.id,AlpacaData.switches.intValue)){
       response->printf("%s1025,%s\"State value not valid MIN:%d MAX:%d, %d given\"}",Alp_ErrN,Alp_ErrM,Switch[AlpacaData.switches.id].property.minValue,Switch[AlpacaData.switches.id].property.maxValue,AlpacaData.switches.intValue);
