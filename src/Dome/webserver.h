@@ -4,7 +4,7 @@
 
 void domeWebServer(){
 
-    server.on("/api/dome/getconfig",               HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/api/dome-getconfig",               HTTP_GET, [](AsyncWebServerRequest *request) {
         AsyncResponseStream *response = request->beginResponseStream("application/json");
         response->print("{\"dome\":{ \"pinstart\":");
         response->print(Config.dome.pinStart);
@@ -25,7 +25,7 @@ void domeWebServer(){
         request->send(response);
     });
 
-    AsyncCallbackJsonWebHandler *domecfg = new AsyncCallbackJsonWebHandler("/api/dome/saveconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
+    AsyncCallbackJsonWebHandler *domecfg = new AsyncCallbackJsonWebHandler("/api/dome-saveconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
         JsonDocument doc;
         doc = json.as<JsonObject>();
         bool reboot = false;
@@ -49,10 +49,8 @@ void domeWebServer(){
             request->send(200, "application/json", "{\"accept\": \"ok\"}");
         }
     });
-    
 
-
-    server.on("/api/dome/cmd",               HTTP_PUT, [](AsyncWebServerRequest *request) {
+    server.on("/api/dome-cmd",               HTTP_PUT, [](AsyncWebServerRequest *request) {
         if (request->hasParam("cmd")){
             int cmd;
             cmd = request->getParam("cmd")->value().toInt();
@@ -86,10 +84,9 @@ void domeWebServer(){
     });
 
 
-
-
     server.on("/api/dome",               HTTP_GET, [](AsyncWebServerRequest *request) {
         AsyncResponseStream *response = request->beginResponseStream("application/json");
+        Dome.lastCommunicationMillis  = millis();
         response->printf("{\"dome\":{ \"actualState\":");
         response->print(Dome.ShutterState);
         response->print(",\"lastCommand\":");

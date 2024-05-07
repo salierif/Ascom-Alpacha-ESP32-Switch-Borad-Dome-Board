@@ -5,7 +5,7 @@ void coverCWebServer(){
 
 
 
-    server.on("/api/coverc/cmd",             HTTP_PUT, [](AsyncWebServerRequest *request) {
+    server.on("/api/coverc-cmd",             HTTP_PUT, [](AsyncWebServerRequest *request) {
         int value = -1;
 
         if (request->hasParam("value")){ 
@@ -23,7 +23,7 @@ void coverCWebServer(){
     
     });
 
-    AsyncCallbackJsonWebHandler *covercfg = new AsyncCallbackJsonWebHandler("/api/coverc/config/set", [](AsyncWebServerRequest * request, JsonVariant & json) {
+    AsyncCallbackJsonWebHandler *covercfg = new AsyncCallbackJsonWebHandler("/api/coverc-setconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
         JsonDocument doc;
         doc = json.as<JsonObject>();
         if (Config.coverC.pin == doc["pin"]){
@@ -37,7 +37,7 @@ void coverCWebServer(){
     });
     server.addHandler(covercfg);
 
-    server.on("/api/coverc/getconfig",               HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/api/coverc-getconfig",               HTTP_GET, [](AsyncWebServerRequest *request) {
         AsyncResponseStream *response = request->beginResponseStream("application/json");
         response->print("{\"cover\":{ \"pin\":");
         response->print(Config.coverC.pin);

@@ -38,8 +38,11 @@ void saveCoverCConfig(){
 void coverCLoop(){
 
     coverC.actualValue = ledcRead(0);
-    if (coverC.actualValue != coverC.cmdValue){
+    if (coverC.cmdValue >= 0){
+        Serial.print("cover new value ");
+        Serial.println(coverC.cmdValue);
         ledcWrite(0 ,coverC.cmdValue);
+        coverC.cmdValue = -1;
     }
 }
 

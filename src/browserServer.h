@@ -57,14 +57,43 @@ void browserServer(){
         request->send(response);
     });
 
-    server.on("/config",                HTTP_GET, [](AsyncWebServerRequest *request) {
-        int i;
+    server.on("/get-config",                HTTP_GET, [](AsyncWebServerRequest *request) {
         AsyncResponseStream *response = request->beginResponseStream("application/json");
         response->print("{");
+        response->printf("\"dome\":");
+        #ifdef DOME
+            response->printf("1");
+        #else
+            response->printf("0");
+        #endif
+            response->printf(",\"switch\":");
+        #ifdef SWITCH
+            response->printf("1");
+        #else
+            response->printf("0");
+        #endif
+                response->printf(",\"cover\":");
+        #ifdef COVERC
+            response->printf("1");
+        #else
+            response->printf("0");
+        #endif
+        response->printf(",\"alpRemPort\":");
+        response->print(Config.alpacaPort.remotePort);
+        response->printf(",\"alpPort\":");
+        response->print(Config.alpacaPort.alpacaPort);
         response->print("}");
         request->send(response);
     });
 
+    AsyncCallbackJsonWebHandler *boardcfg = new AsyncCallbackJsonWebHandler("/set-config", [](AsyncWebServerRequest * request, JsonVariant & json) {
+        JsonDocument doc;
+        doc = json.as<JsonObject>();
+        
+        request->send(200, "application/json", "{\"reboot\": \"1\"}");
+        
+    });
+    server.addHandler(boardcfg);
 
     server.serveStatic("/favicon.ico", SPIFFS, "/favicon.ico").setCacheControl("max-age=31536000");
     server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");

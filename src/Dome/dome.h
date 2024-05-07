@@ -78,8 +78,13 @@ void LastDomeCommandExe(){
 }
 
 
-void domeStatusWatcher(){
-  
+void domeAutoClose(){
+  if (Dome.ShutterInputState == ShOnlyOpen && Config.dome.autoCloseTimeOut){
+    if (millis() - (Dome.lastCommunicationMillis * 1000 * 60) > ShMoveTimeOut) {
+          Dome.ShutterCommand = CmdClose;
+        }
+
+  }
 }
 
 void domehandlerloop() {
@@ -246,7 +251,7 @@ void domehandlerloop() {
             break;
   }
 
-
+  domeAutoClose();
 }
 
 

@@ -31,6 +31,7 @@ struct DomeStruct{
   int Cycle;
   bool MoveRetry;
   unsigned int LastDomeCommand =0;
+  unsigned long lastCommunicationMillis;
 };
 
 DomeStruct Dome;

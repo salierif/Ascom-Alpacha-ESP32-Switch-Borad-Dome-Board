@@ -19,12 +19,16 @@ AlpacaCommonData AlpacaData;
 
 
 /** CONFIG STRUCT **/
-
+struct boardSaveConfigStruct{
+  bool execute = false;
+  bool failed = false;
+  bool restartNeeded = false;
+};
 struct saveConfigStruct{
   domeSaveConfigStruct dome;
   switchSaveConfigStruct switches;
   coverCSaveConfigStruct coverC;
-
+  boardSaveConfigStruct board;
 };
 
 struct validConfig{

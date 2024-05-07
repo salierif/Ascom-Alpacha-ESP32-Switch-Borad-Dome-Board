@@ -36,7 +36,9 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
   AlpacaData.switches.state = false;
   AlpacaData.switches.intValue = -1;
   AlpacaData.coverC.brightness = -1;
-  AlpacaData.LastServerRequest = millis();
+  #ifdef DOME
+  Dome.lastCommunicationMillis  = millis();
+  #endif
   int paramsNr = request->params();
   String parameter;
   AlpacaData.serverTransactionID++;

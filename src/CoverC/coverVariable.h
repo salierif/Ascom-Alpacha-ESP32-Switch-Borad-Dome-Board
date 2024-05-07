@@ -5,7 +5,7 @@
 
 struct coverCStruct{
     unsigned int actualValue;
-    unsigned int cmdValue;
+    int cmdValue = -1;
 };
 
 coverCStruct coverC;

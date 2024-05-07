@@ -43,6 +43,7 @@
   <div class=""><h1 class="text-center text-xl">StefanoTesla Dome&Switch</h1></div>
     <div x-data="globalData()">
     <!--DOME-->
+    <template x-if="exist.dome">
     <div class="main-tab bg-slate-600"
       x-data="{open:false}"
       >
@@ -75,32 +76,36 @@
       </div>
 
     </div>
-
+  </template>
     <!--DOME-->
-    <div class="main-tab bg-slate-600"
-      x-data="{open:false}"
-      >
 
-      <div class="tab-header" >
-        <div class="grow">Cover Calibration</div>
-        <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
-      </div>
+    <!-- COVER CALIBRATOR -->
+    <template x-if="exist.coverc">
+      <div class="main-tab bg-slate-600"
+        x-data="{open:false}"
+        >
 
-      <div class="tab-content" x-show="open" x-transition>
-        <div>
-          <p>Pin: <input x-on:change="validatePinNumber($event)" type="number" id="coverpin" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="cover.pin"/></p>
-      </div>
+        <div class="tab-header" >
+          <div class="grow">Cover Calibration</div>
+          <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
+        </div>
 
-        <div class="pt-2">
-            <button @click="saveCoverSetting()" class="button button_green">Salva</button>
-            <a href="/ccalibconfig.txt" download class="button button_green">Scarica Configurazione</a>
+        <div class="tab-content" x-show="open" x-transition>
+          <div>
+            <p>Pin: <input x-on:change="validatePinNumber($event)" type="number" id="coverpin" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="cover.pin"/></p>
+        </div>
+
+          <div class="pt-2">
+              <button @click="saveCoverSetting()" class="button button_green">Salva</button>
+              <a href="/ccalibconfig.txt" download class="button button_green">Scarica Configurazione</a>
+          </div>
+
         </div>
 
       </div>
-
-    </div>
-
+    </template>
     <!--SWITCH-->
+    <template x-if="exist.switch">
     <div class="main-tab bg-slate-600"
       x-data="{open:false}">
 
@@ -141,6 +146,33 @@
     </div>
     </div>
     </div>
+    </template>
+    <!-- Ascom-->
+
+    <div class="main-tab bg-slate-600"
+      x-data="{open:false}"
+      >
+
+      <div class="tab-header" >
+        <div class="grow">Ascom Alpaca</div>
+        <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
+      </div>
+
+      <div class="tab-content" x-show="open" x-transition>
+        <div>
+          <p>Remote port is usually 32227! if you changed from Ascom software, you know the port you need!<br> Alpaca port is the port from the request will arrived and sended from this borad to the remote port.<br>Change this setting only if you really need it.<br></p>
+          <p>Remote Port: <input type="number" id="ascomremotePort" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="board.remotePort"/></p>
+          <p>Alpaca Port: <input type="number" id="ascomboardPort" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="board.alpacaPort"/></p>
+      </div>
+
+        <div class="pt-2">
+            <button @click="saveBoardSetting()" class="button button_green">Salva</button>
+            <a href="/config.txt" download class="button button_green">Scarica Configurazione</a>
+        </div>
+
+      </div>
+    </div>
+
 
     <template x-if="relodRequest">
       <div class="fixed top-0 left-0 h-full w-full backdrop-blur-sm flex align-middle items-center">
@@ -184,6 +216,8 @@
   <script>
     function globalData() {
       return {
+        exist: {switch:false,dome:false,coverc:false},
+        board: [],
         dome: [],
         cover: [],
         switches : [],
@@ -191,9 +225,11 @@
         pinIdError:0,
         notices: [],
 		    visible: [],
-        unusablePinForInput: [6,7,8,9,10,11,20,21,24,28,29,30,31,37,38],
-        unusablePinForOutput: [6,7,8,9,10,11,20,21,24,28,29,30,31,34,35,36,37,38,39],
+        unusablePinForInput: [0,6,7,8,9,10,11,20,21,24,28,29,30,31,37,38],
+        unusablePinForOutput: [0,6,7,8,9,10,11,20,21,24,28,29,30,31,34,35,36,37,38,39],
+        ports: [80,443,43,3389,21,22],
         reload() {
+          this.board = [],
           this.dome = [];
           this.switches = [];
           this.cover = [];
@@ -204,7 +240,7 @@
         },
 
         getDomeConfig(){
-          fetch('http://172.20.10.5/api/dome/getconfig')
+          fetch('http://172.20.10.5/api/dome-getconfig')
           .then(response => response.json())
           .then(response => {
             this.dome = response.dome;
@@ -212,7 +248,7 @@
         },
 
         getSwitchConfig(){
-          fetch('http://172.20.10.5/api/switch/getconfig')
+          fetch('http://172.20.10.5/api/switch-getconfig')
           .then(response => response.json())
           .then(response => {
             response.switches.forEach((element,index) => (
@@ -222,7 +258,7 @@
         },
 
         getCoverCConfig(){
-          fetch('http://172.20.10.5/api/coverc/getconfig')
+          fetch('http://172.20.10.5/api/coverc-getconfig')
           .then(response => response.json())
           .then(response => {
             this.cover = response.cover;
@@ -230,9 +266,15 @@
         },
         
         updateData(){
-          this.getDomeConfig();
-          this.getSwitchConfig();
-          this.getCoverCConfig();
+          fetch('http://172.20.10.5/get-config')
+          .then(response => response.json())
+          .then(response => {
+            this.board.remotePort = response.alpRemPort;
+            this.board.alpacaPort = response.alpPort;
+            if (response.dome) { this.exist.dome = true,this.getDomeConfig()}
+            if (response.switch) {this.exist.switch = true,this.getSwitchConfig()}
+            if (response.cover) {this.exist.coverc = true,this.getCoverCConfig()}
+          });
         },
 
         init() {this.updateData()},
@@ -268,7 +310,7 @@
               this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinhalt + " NON UTILIZZABILE come Output"});
               return;
             }
-            fetch('http://172.20.10.5/api/dome/saveconfig',{ 
+            fetch('http://172.20.10.5/api/dome-saveconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.dome)
@@ -282,7 +324,7 @@
               this.addToast({type:"error", text:"CoverCalib Validation Error, PIN " + this.cover.pin + " NON UTILIZZABILE come Output"});
               return;
             }
-            fetch('/coverconfig',{ 
+            fetch('http://172.20.10.5/api/coverc-setconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.cover)
@@ -291,24 +333,7 @@
             .then(response => { if (response.reboot){this.pageRefresh();}});
         },
         savePinSetting(){
-          let error;
-          let validation = JSON.parse(JSON.stringify(this.switches));
-          for(let i=0; i < validation.length; i++){
-            let y;
-            y = i+1;
-            if(validation[i].type==0 || validation[i].type>4){
-              this.addToast({type:"error", text:"SWITCH " + y + " - TIPO ERRATO"})
-            }
-            if(validation[i].type==1 || validation[i].type==3 && this.unusablePinForOutput.includes(validation[i].pin) ){
-              this.addToast({type:"error", text:"SWITCH " + y + " - pin non utilizzabile come uscita"})
-            }
-            if(validation[i].type==2 && this.unusablePinForInput.includes(validation[i].pin) ){
-              this.addToast({type:"error", text:"SWITCH " + y + " - pin non utilizzabile come ingresso"})
-            }
-          }
-
-          if(error){ this.addToast({type:"error", text:"Errore di Validazione"}); return; }
-          fetch('http://172.20.10.5/api/switch/saveconfig',{ 
+          fetch('http://172.20.10.5/api/switch-saveconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.switches)
@@ -316,6 +341,20 @@
             .then(response => response.json())
             .then(response => { if (response.reboot){this.pageRefresh();}});
         },
+
+
+        saveBoardSetting(){
+          fetch('http://172.20.10.5/api/switch-saveconfig',{ 
+              method: 'POST',
+              headers: {"Content-Type": "application/json",},
+              body: JSON.stringify(this.board)
+            })
+            .then(response => response.json())
+            .then(response => { if (response.reboot){this.pageRefresh();}});
+        },
+
+
+        
         addPin(){if(this.switches.length < 16){ this.switches.push({name: '',desc: '',type: 0,pin: 0});} else { console.error("Limite Raggiunto")}},
         removePin(index) {this.switches.splice(index, 1);},
 

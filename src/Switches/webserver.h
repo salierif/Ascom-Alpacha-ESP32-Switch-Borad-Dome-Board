@@ -3,7 +3,7 @@
 
 void switchWebServer(){
 
-    server.on("/api/switch/cmd",             HTTP_PUT, [](AsyncWebServerRequest *request) {
+    server.on("/api/switch-cmd",             HTTP_PUT, [](AsyncWebServerRequest *request) {
         int id = -1;
         int value = -1;
         if (request->hasParam("id")){
@@ -35,7 +35,7 @@ void switchWebServer(){
     
     });
 
-    AsyncCallbackJsonWebHandler *switchConfig = new AsyncCallbackJsonWebHandler("/api/switch/saveconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
+    AsyncCallbackJsonWebHandler *switchConfig = new AsyncCallbackJsonWebHandler("/api/switch-saveconfig", [](AsyncWebServerRequest * request, JsonVariant & json) {
         JsonDocument doc;
         int i=0;
         int x=0;
@@ -85,7 +85,7 @@ void switchWebServer(){
     });
     server.addHandler(switchConfig);
     
-    server.on("/api/switch/getconfig",                HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/api/switch-getconfig",                HTTP_GET, [](AsyncWebServerRequest *request) {
         int i;
         AsyncResponseStream *response = request->beginResponseStream("application/json");
         response->print("{");

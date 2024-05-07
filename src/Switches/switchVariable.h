@@ -8,6 +8,7 @@ struct SwitchProperty{
   int maxValue = 1;
   int Step = 1;
   int type;
+  int pwmch;
 };
 
 struct SwitchStruct
@@ -15,7 +16,7 @@ struct SwitchStruct
   String Name;
   String Description;
   int pin = 0;
-  int cmdValue;
+  int cmdValue = -1;
   int readValue;
   SwitchProperty property;
   int pwmChannel = -1;

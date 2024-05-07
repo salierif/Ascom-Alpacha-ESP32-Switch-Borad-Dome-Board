@@ -134,8 +134,9 @@ void switchLoop(){
     
       case 1://DO
         Switch[i].readValue = digitalRead(Switch[i].pin);
-        if ( Switch[i].readValue != Switch[i].cmdValue && validateSwitchValue(i,Switch[i].cmdValue) ){
+        if (Switch[i].cmdValue >= 0 && validateSwitchValue(i,Switch[i].cmdValue) ){
           digitalWrite(Switch[i].pin,Switch[i].cmdValue);
+          Switch[i].cmdValue = -1;
         }
         break;
 
@@ -144,10 +145,13 @@ void switchLoop(){
         break;
 
       case 3://PWM
-        Switch[i].readValue = ledcRead(Switch[i].pin);
-        if ( Switch[i].readValue != Switch[i].cmdValue && validateSwitchValue(i,Switch[i].cmdValue)
+        Switch[i].readValue = ledcRead(Switch[i].pwmChannel);
+        if ( Switch[i].cmdValue >= 0 && validateSwitchValue(i,Switch[i].cmdValue)
         ){
-          analogWrite(Switch[i].pin,Switch[i].cmdValue);
+          Serial.print("switch new value ");
+          Serial.println(Switch[i].cmdValue);
+          ledcWrite(Switch[i].pwmChannel,Switch[i].cmdValue);
+          Switch[i].cmdValue = -1;
         }      
         break;
 

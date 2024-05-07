@@ -51,6 +51,7 @@
       x-data="globalData()" 
     >
     <!--DOME-->
+    <template x-if="exist.dome">
     <div class="main-tab bg-slate-600"
       x-data="{open:false}"
       >
@@ -76,9 +77,9 @@
           <template x-if="dome.lastCommand === 3"><p>HALT</p></template>
         </div>
         <div class="grid grid-flow-row grid-rows-3 mx-auto gap-10 pt-6">
-            <button @click="openShutter" class="px-12 py-2 bg-green-600 w-full" >Apri</button>
-            <button @click="closeShutter" class="px-12 py-2 bg-red-600 w-full">Chiudi</button>
-            <button @click="haltShutter" class="text-black font-bold px-12 py-2 bg-yellow-300 w-full">HALT</button>
+            <button @click="shutterCmd(1)" class="px-12 py-2 bg-green-600 w-full" >Apri</button>
+            <button @click="shutterCmd(2)" class="px-12 py-2 bg-red-600 w-full">Chiudi</button>
+            <button @click="shutterCmd(3)" class="text-black font-bold px-12 py-2 bg-yellow-300 w-full">HALT</button>
         </div>
         <template x-if="dome.error == 1">
           <div class="message message-ok">Command Send Succesfully!!</div>
@@ -90,6 +91,7 @@
       </div>
 
     </div>
+    </template>
 
     <!-- COVER CALIBRATOR -->
     <div class="main-tab bg-slate-600"
@@ -154,7 +156,7 @@
             </div>
 
             <p>Valore Attuale:</p>
-              <template x-if="swi.type == 1">
+              <template x-if="swi.type >= 2"> 
                 <div class="flex w-full flex-col justify-around ">
                   <p class="font-semibold" x-text="swi.actualValue"></p>
                   <p>Min: <span x-text="swi.actualValue"></span> Max: <span x-text="swi.max"></span></p>
@@ -162,12 +164,11 @@
                 
               </template>
 
-              <template x-if="swi.type == 0">
+              <template x-if="swi.type <= 1">
                 <div class="w-full">
                   <div x-show="swi.actualValue" class="card_actual_value  bg-green-600">ON</div>
                   <div x-show="!swi.actualValue" class="card_actual_value bg-red-600">OFF</div>
                 </div>
-
               </template>
             
             
@@ -299,31 +300,18 @@
               if(this.exist.dome || this.exist.switch || this.exist.coverc){ this.getDomeData() }
               })
             .catch(error => console.log(error))
-            .finally(() => setInterval(() => this.updateData(), 10000));
+            .finally(() => setInterval(() => this.updateData(), 30000));
         },
 
         init() {  
           this.initData();
         },
 
-        openShutter(){
-          fetch('/api/dome/cmd?cmd=1',{ method: 'PUT'})
-            .then(response => response.json())
-            .then(response => {
-                  this.dome.error = response.error;
-              });
-        },
-
-        closeShutter(){
-          fetch('/api/dome/cmd?cmd=2',{ method: 'PUT'})
-            .then(response => response.json())
-            .then(response => {
-                  this.dome.error = response.error;
-              });
-        },
-
-        haltShutter(){
-          fetch('/api/dome/cmd?cmd=3',{ method: 'PUT'})
+        shutterCmd(cmd){
+          //1 apertura
+          //2 chiusura
+          //3 halt
+          fetch('/api/dome-cmd?cmd='+cmd,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                   this.dome.error = response.error;
@@ -331,7 +319,7 @@
         },
 
         coverCmd(value){
-          fetch('http://172.20.10.5/api/coverc/cmd?value='+value,{ method: 'PUT'})
+          fetch('/api/coverc-cmd?value='+value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                   this.cover.error = response.error;
@@ -339,7 +327,7 @@
         },
 
         setDigitalSwValue(id,value){
-          fetch('http://172.20.10.5/api/switch/cmd?id='+id+'&value='+value,{ method: 'PUT'})
+          fetch('/api/switch-cmd?id='+id+'&value='+value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
                 if (response.done){
@@ -351,7 +339,7 @@
               });
         },
         setAnalogSwValue(id,event){
-          fetch('/api/switch/cmd?id='+id+'&value='+event.target.value,{ method: 'PUT'})
+          fetch('/api/switch-cmd?id='+id+'&value='+event.target.value,{ method: 'PUT'})
             .then(response => response.json())
             .then(response => {
               if (response.done){
