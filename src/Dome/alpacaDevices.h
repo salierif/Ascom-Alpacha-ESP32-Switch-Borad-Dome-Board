@@ -1,8 +1,6 @@
 #ifndef DOME_FUNC
 #define DOME_FUNC
 
-#include "domehandler.h"
-
 void domeFalseValueAnswer(AsyncWebServerRequest *request){
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
@@ -11,7 +9,7 @@ void domeFalseValueAnswer(AsyncWebServerRequest *request){
   response->printf("%sfalse}",Alp_Value);
   request->send(response);
 }
-void DomeAlpaca(){ 
+void DomeAlpacaDevices(){ 
 
 
 Alpserver.on("/api/v1/dome/0/shutterstatus",                                            HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -70,61 +68,6 @@ Alpserver.on("/api/v1/dome/0/connected",                                        
   request->send(response);
 });
 
-Alpserver.on("/api/v1/dome/0/connected",                                                HTTP_PUT, [](AsyncWebServerRequest *request){
-  GetAlpArguments(request);
-  AsyncResponseStream *response = request->beginResponseStream("application/json");
-  AlpacaHeaderSchema(response,AlpacaData);
-  AlpacaNoErrorSchema(response,false);
-  response->printf("}");
-  request->send(response);
-});
-
-Alpserver.on("/api/v1/dome/0/description",                                              HTTP_GET, [](AsyncWebServerRequest *request) {
-  GetAlpArguments(request);
-  AsyncResponseStream *response = request->beginResponseStream("application/json");
-  AlpacaHeaderSchema(response,AlpacaData);
-  AlpacaNoErrorSchema(response);
-  response->printf("%s\"StefanoTesla Dome\"}",Alp_Value);
-  request->send(response);
-});
-
-Alpserver.on("/api/v1/dome/0/driverinfo",                                               HTTP_GET, [](AsyncWebServerRequest *request) {
-  GetAlpArguments(request);
-  AsyncResponseStream *response = request->beginResponseStream("application/json");
-  AlpacaHeaderSchema(response,AlpacaData);
-  AlpacaNoErrorSchema(response);
-  response->printf("%s\"StefanoTesla Dome response on the fly\"}",Alp_Value);
-  request->send(response);
-});
-
-Alpserver.on("/api/v1/dome/0/driverversion",                                            HTTP_GET, [](AsyncWebServerRequest *request) {
-
-  GetAlpArguments(request);
-  AsyncResponseStream *response = request->beginResponseStream("application/json");
-  AlpacaHeaderSchema(response,AlpacaData);
-  AlpacaNoErrorSchema(response);
-  response->printf("%s\"2.0.0\"}",Alp_Value);
-  request->send(response);
-
-});
-
-Alpserver.on("/api/v1/dome/0/interfaceversion",                                         HTTP_GET, [](AsyncWebServerRequest *request) {
-  GetAlpArguments(request);
-  AsyncResponseStream *response = request->beginResponseStream("application/json");
-  AlpacaHeaderSchema(response,AlpacaData);
-  AlpacaNoErrorSchema(response);
-  response->printf("%s1}",Alp_Value);
-  request->send(response);
-});
-
-Alpserver.on("/api/v1/dome/0/name",                                                     HTTP_GET, [](AsyncWebServerRequest *request) {
-  GetAlpArguments(request);
-  AsyncResponseStream *response = request->beginResponseStream("application/json");
-  AlpacaHeaderSchema(response,AlpacaData);
-  AlpacaNoErrorSchema(response);
-  response->printf("%s\"StefanoTeslaDome\"}",Alp_Value);
-  request->send(response);
-});
 
 Alpserver.on("/api/v1/dome/0/cansetshutter",                                            HTTP_GET, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);

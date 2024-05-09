@@ -1,40 +1,94 @@
 #ifndef DOME_HAND
 #define DOME_HAND
 
+
+
+
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
 
-void domeSetup() {
-  pinMode(setting.dome.pinStart, OUTPUT);
-  pinMode(setting.dome.pinHalt, OUTPUT);
-  pinMode(setting.dome.pinOpen, INPUT);
-  pinMode(setting.dome.pinClose, INPUT);
+
+void initDomeConfig(){
+    JsonDocument doc;
+    File file = SPIFFS.open("/domeconfig.txt", FILE_READ);
+    if (!file) {
+        Serial.println("Reading Dome config error");
+        return;
+    }
+    DeserializationError error = deserializeJson(doc, file);
+    if(error){
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.c_str());
+        return;
+    }
+    Config.dome.pinStart = doc["pinstart"];
+    Config.dome.pinHalt = doc["pinhalt"];
+    Config.dome.pinOpen = doc["pinopen"];
+    Config.dome.pinClose = doc["pinclose"];
+    Config.dome.movingTimeOut = doc["tout"];
+    Config.dome.enAutoClose = doc["enautoclose"];
+    Config.dome.autoCloseTimeOut = doc["autoclose"];
+    file.close();
+    Config.read.dome.isValid = true;
+
+    pinMode(Config.dome.pinStart, OUTPUT);
+    pinMode(Config.dome.pinHalt, OUTPUT);
+    pinMode(Config.dome.pinOpen, INPUT);
+    pinMode(Config.dome.pinClose, INPUT);
 }
+
+void saveDomeConfig(){
+    String datasetup;
+    JsonDocument doc;
+    doc["pinstart"] = Config.dome.pinStart;
+    doc["pinhalt"] = Config.dome.pinHalt;
+    doc["pinopen"] = Config.dome.pinOpen;
+    doc["pinclose"] = Config.dome.pinClose;    
+    doc["tout"] = Config.dome.movingTimeOut;
+    doc["enautoclose"] = Config.dome.enAutoClose;
+    doc["autoclose"] = Config.dome.autoCloseTimeOut;
+    serializeJson(doc, datasetup);
+    File file = SPIFFS.open("/domeconfig.txt", FILE_WRITE);
+    file.print(datasetup);
+    file.close();
+}
+
 
 void domeInputState(){
 
     // I used enum for input state for making the cycle code more clean
-    if (digitalRead(setting.dome.pinClose) == HIGH && digitalRead(setting.dome.pinOpen) == LOW) {
+    if (digitalRead(Config.dome.pinClose) == HIGH && digitalRead(Config.dome.pinOpen) == LOW) {
       Dome.ShutterInputState = ShOnlyClose;
     }
-    if ( digitalRead(setting.dome.pinClose) == LOW && digitalRead(setting.dome.pinOpen) == HIGH) {
+    if ( digitalRead(Config.dome.pinClose) == LOW && digitalRead(Config.dome.pinOpen) == HIGH) {
       Dome.ShutterInputState = ShOnlyOpen;
     }
-    if ( digitalRead(setting.dome.pinOpen) == HIGH && digitalRead(setting.dome.pinClose) == HIGH) {
+    if ( digitalRead(Config.dome.pinOpen) == HIGH && digitalRead(Config.dome.pinClose) == HIGH) {
       Dome.ShutterInputState = ShInAll;
     }
-    if ( digitalRead(setting.dome.pinOpen) == LOW && digitalRead(setting.dome.pinClose) == LOW) {
+    if ( digitalRead(Config.dome.pinOpen) == LOW && digitalRead(Config.dome.pinClose) == LOW) {
       Dome.ShutterInputState = ShInNoOne;
     }
 }
+
 void LastDomeCommandExe(){
   if (Dome.ShutterCommand != Idle) {
     Dome.LastDomeCommand = Dome.ShutterCommand;
   }
 }
 
+
+void domeAutoClose(){
+  if (Dome.ShutterInputState == ShOnlyOpen && Config.dome.autoCloseTimeOut){
+    if (millis() - (Dome.lastCommunicationMillis * 1000 * 60) > ShMoveTimeOut) {
+          Dome.ShutterCommand = CmdClose;
+        }
+
+  }
+}
+
 void domehandlerloop() {
-  ShMoveTimeOut = setting.dome.movingTimeOut *1000;
+  ShMoveTimeOut = Config.dome.movingTimeOut *1000;
   domeInputState();
   LastDomeCommandExe();
   // TIMEOUT MOVIMENTAZIONE
@@ -43,6 +97,7 @@ void domehandlerloop() {
       Dome.Cycle = 100;  //Timeout, HALT
     }
   }
+
 
   switch (Dome.Cycle)
   {
@@ -58,7 +113,7 @@ void domehandlerloop() {
                 Dome.ShutterState = ShOpening;
                 Dome.Cycle = 10;
               } else {
-                Dome.ShutterState = ShOpen;
+                
                 Dome.ShutterCommand = Idle;
               }
             }
@@ -82,14 +137,14 @@ void domehandlerloop() {
             //Open and close cycle are identical, I just hope to reach the right
             //Pulse to start to the motor, ack millis for time out and
             ShMoveTimeOutAck = millis();
-            digitalWrite(setting.dome.pinStart, HIGH);
+            digitalWrite(Config.dome.pinStart, HIGH);
             Dome.Cycle++;
             break;
 
     case 11:  //Take signal end to loose signal
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Wait 1second anyway
               if (Dome.ShutterInputState == ShInAll || Dome.ShutterInputState == ShInNoOne) {
-                digitalWrite(setting.dome.pinStart, LOW);
+                digitalWrite(Config.dome.pinStart, LOW);
                 ShMoveTimeOutAck = millis();
                 Dome.Cycle++;
               }
@@ -146,15 +201,15 @@ void domehandlerloop() {
 
 //PING PONG - HALT ASPETTO E RIBADISCO LO START
     case 20:ShMoveTimeOutAck = millis();
-            digitalWrite(setting.dome.pinHalt, HIGH);   //I need just a pulse for start roof motor
-            digitalWrite(setting.dome.pinStart, LOW);
+            digitalWrite(Config.dome.pinHalt, HIGH);   //I need just a pulse for start roof motor
+            digitalWrite(Config.dome.pinStart, LOW);
             Dome.Cycle++;
             break;
 
     case 21:
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Wait a second
-              digitalWrite(setting.dome.pinHalt, LOW);   
-              digitalWrite(setting.dome.pinStart, LOW);
+              digitalWrite(Config.dome.pinHalt, LOW);   
+              digitalWrite(Config.dome.pinStart, LOW);
               Dome.Cycle++;
               ShMoveTimeOutAck = millis();
             }        
@@ -171,15 +226,15 @@ void domehandlerloop() {
     case 100: //halt command for 1sec
             ShMoveTimeOutAck = millis();
             Dome.ShutterState = ShError;
-            digitalWrite(setting.dome.pinHalt, HIGH);
-            digitalWrite(setting.dome.pinStart, LOW);
+            digitalWrite(Config.dome.pinHalt, HIGH);
+            digitalWrite(Config.dome.pinStart, LOW);
             Dome.Cycle++;
             break;
 
     case 101: //halt command for 1sec
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Setting Output for 1sec
-              digitalWrite(setting.dome.pinHalt, LOW);   
-              digitalWrite(setting.dome.pinStart, LOW);
+              digitalWrite(Config.dome.pinHalt, LOW);   
+              digitalWrite(Config.dome.pinStart, LOW);
               Dome.Cycle++;
             }
             break;
@@ -196,8 +251,18 @@ void domehandlerloop() {
             break;
   }
 
-
+  domeAutoClose();
 }
 
+
+#include "webserver.h"
+#include "alpacaDevices.h"
+#include "alpacaManage.h"
+
+void domeServer(){
+  DomeAlpacaDevices();
+  DomeAlpacaManage();
+  domeWebServer();
+}
 
 #endif

@@ -14,8 +14,15 @@
         "ostream": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "bitset": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "optional": "cpp",
+        "system_error": "cpp"
     },
     "idf.portWin": "COM3",
-    "cmake.sourceDirectory": "C:/Users/StefanoMartini/ascom-alpacha-switch-dome-board/.pio/libdeps/esp32doit-devkit-v1/ArduinoJson"
+    "cmake.sourceDirectory": "C:/Users/StefanoMartini/ascom-alpacha-switch-dome-board/.pio/libdeps/esp32doit-devkit-v1/ArduinoJson",
+    "C_Cpp.dimInactiveRegions": true
 }

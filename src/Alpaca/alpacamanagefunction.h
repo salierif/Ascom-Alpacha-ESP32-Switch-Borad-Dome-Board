@@ -12,7 +12,7 @@ void AlpacaHeaderSchema(AsyncResponseStream *response, AlpacaCommonData paramete
   response->print(F("{\"ClientTransactionID\":"));
   response->print(parameters.clientTransactionID);
   response->print(F(",\"ServerTransactionID\":"));
-  response->print(parameters.clientTransactionID);
+  response->print(parameters.serverTransactionID);
   response->print(F(","));
 }
 
@@ -35,7 +35,10 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
   AlpacaData.switches.id = -1;
   AlpacaData.switches.state = false;
   AlpacaData.switches.intValue = -1;
-  AlpacaData.coverCalibrator.brightness = -1;
+  AlpacaData.coverC.brightness = -1;
+  #ifdef DOME
+  Dome.lastCommunicationMillis  = millis();
+  #endif
   int paramsNr = request->params();
   String parameter;
   AlpacaData.serverTransactionID++;
@@ -83,7 +86,7 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
       }
     } 
     if (parameter == "brightness") {
-      AlpacaData.coverCalibrator.brightness = p->value().toInt();
+      AlpacaData.coverC.brightness = p->value().toInt();
     }       
     
   }
@@ -159,10 +162,10 @@ void AlpacaManager(){
     response->print(F("{\"DeviceName\":\"TeslaSwitch\",\"DeviceType\":\"Switch\",\"DeviceNumber\":0,\"UniqueID\":\"d93f20fb-aa85-49ed-8799-9f50c0969ede\"},"));
     response->print(F("{\"DeviceName\":\"TeslaCoverCalibratior\",\"DeviceType\":\"CoverCalibrator\",\"DeviceNumber\":0,\"UniqueID\":\"35672690-40bf-4165-b44e-d59c2c524f11\"}"));
     response->print(F("],"));
-  response->printf("%s%d,%s%d",
-                                Alp_CliTraId,AlpacaData.clientTransactionID,
-                                Alp_SerTraId,AlpacaData.serverTransactionID
-                                );
+    response->printf("%s%d,%s%d",
+      Alp_CliTraId,AlpacaData.clientTransactionID,
+      Alp_SerTraId,AlpacaData.serverTransactionID
+      );
     response->print(F("}"));
     request->send(response);
   });

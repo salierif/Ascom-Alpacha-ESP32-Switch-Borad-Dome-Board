@@ -1,126 +1,130 @@
-struct FileStruct{
-  bool saveSwitchSetting = false;
-  bool saveDomeSetting = false;
-  bool saveCoverCalibratorSetting = false;
-  bool restartNeeded = false;
-};
+unsigned int pwmchannles = 1;//channel 0 is reserved to coverCalibrator
 
-FileStruct FileHandler;
+/* ALPACA DATA */
 
-typedef struct{
-  bool idExist;
-  int id;               /* used for switch ID */
-  bool stateExist;
-  bool state;               /* used for setswitch */
-  bool intValueExist;
-  int intValue;            /* used for setswitchvalue */
-  bool nameExist;
-  String name;              /* used for set switch name */
-} switchAlpacaParameters;
-
-typedef struct{
-  unsigned int brightness;
-} coverCalibratorAlpacaParameters;
-
-
-/* ALPACA COMMON DATA */
 struct AlpacaCommonData{
   uint32_t clientTransactionID;
   uint32_t serverTransactionID = 0;
   uint32_t clientID;
+  unsigned long LastServerRequest;
   bool boConnect;
+  //domeAlpacaParameters dome;
   switchAlpacaParameters switches;
-  coverCalibratorAlpacaParameters coverCalibrator;
+  coverCAlpacaParameters coverC;
 };
 
 AlpacaCommonData AlpacaData;
 
-/*END ALPACA COMMON DATA */
+/*END ALPACA DATA */
 
-/**DOME DATA**/
-enum ShInEnum {
-  ShInNoOne,
-  ShOnlyClose,
-  ShOnlyOpen,
-  ShInAll,
+
+/** CONFIG STRUCT **/
+struct boardSaveConfigStruct{
+  bool execute = false;
+  bool failed = false;
+  bool restartNeeded = false;
 };
-enum ShStEnum {
-  ShOpen,
-  ShClose,
-  ShOpening,
-  ShClosing,
-  ShError
-};
-enum ShCmdEnum {
-  Idle,
-  CmdOpen,
-  CmdClose,
-  CmdHalt
+struct saveConfigStruct{
+  domeSaveConfigStruct dome;
+  switchSaveConfigStruct switches;
+  coverCSaveConfigStruct coverC;
+  boardSaveConfigStruct board;
 };
 
-struct DomeStruct{
-  ShCmdEnum ShutterCommand;
-  ShStEnum ShutterState;
-  ShInEnum ShutterInputState;
-  int Cycle;
-  bool MoveRetry;
-  unsigned int LastDomeCommand =0;
-  unsigned long LastServerRequest;
+struct validConfig{
+  domeLoadConfigStruct dome ;
+  switchLoadConfigStruct switches;
+  coverCLoadConfigStruct coverC;
 };
 
-DomeStruct Dome;
-
-/** END DOME DATA **/
-
-/** SWITCH STRUCT **/
-struct SwtichStruct
-{
-  String Name;
-  String Description;
-  uint8_t pin = 0;
-  int minValue = 0;
-  int maxValue = 1;
-  bool CanSet = false;
-  int Step = 1;
-  bool analog = false;
-  int anaValue = 0;
-  int pwmChannel = -1;
-  int type;
-};
-
-#define _MAX_SWITCH_ID_ 16
-
-SwtichStruct Switch[_MAX_SWITCH_ID_];
-/** END SWITCH STRUCT **/
-unsigned int pwmchannles = 1;
-//channel 0 is reserved to coverCalibrator
-
-/** SETTING STRUCT **/
-typedef struct{
-  uint8_t pinStart;
-  uint8_t pinHalt;
-  uint8_t pinOpen;
-  uint8_t pinClose;
-  unsigned long movingTimeOut = 20;
-  bool enAutoClose;
-  unsigned long autoCloseTimeOut = 20;
-} domeSetting;
-
-typedef struct{
-  unsigned int maxSwitch;
-} switchSetting;
-
-typedef struct{
+struct coverCalibrationSetting {
   unsigned int pin = 0;
-} coverCalibrationSetting;
+};
+
+struct AlpacaPortsStruct{
+  unsigned int remotePort = 32227;
+  unsigned int alpacaPort = 4567;
+};
+
+struct ConfigStruct{
+  saveConfigStruct save;
+  validConfig read;
+  domeConfig dome;
+  coverCalibrationSetting coverC;
+  switchConfig switches;
+  AlpacaPortsStruct alpacaPort;
+};
+
+ConfigStruct Config;
+/* END OF CONFIG */
 
 
-typedef struct {
-  domeSetting dome;
-  switchSetting switches;
-  coverCalibrationSetting coverCalibration;
-}boardSetting;
 
-boardSetting setting;
-/**END SETTING STRUCT **/
+/* GLOBAL VARIABLES */
+struct upTimeStruct{
+  unsigned long previousMillis = 0;
+  unsigned long minutes = 0;
+};
 
+struct wifiReconntectionStruct{
+  unsigned long intervall = 30000;
+  unsigned long lastMillis = 0;
+  bool waitToReconnect = false;
+};
+
+struct wifiStruct{
+  wifiReconntectionStruct reconnection;
+  upTimeStruct upTime;
+};
+
+struct esp32Struct{
+  upTimeStruct upTime;
+};
+
+struct globalVariable{
+  unsigned long upTimeInterval = 60000;
+  esp32Struct esp32;
+  wifiStruct wifi;
+};
+
+globalVariable Global;
+
+
+/* END OF GLOBAL */
+
+
+//common function to validate a pin usage
+
+bool validatePin(int pin, int type){
+
+  // pin from 6 to 11 are connected to integrated spi
+  //pin 0 should be low to enter in flash mode, so I avoid to use it.
+  if (pin == 0 || (pin >= 6 && pin <= 11)){
+    return false;
+    Serial.print(F("Pin validation error: cannot be used in any way "));
+    Serial.println(pin);
+  }
+
+  switch(type){
+      case 1: //Digital Output
+      case 3: //PWM Output
+              return pin >=34 ? false : true;
+              break;
+      case 2: //Digital Input
+              return pin >= 4 ? true : false;
+              break;
+      case 4: //Analog Input
+              if(
+                pin == 2 ||
+                pin == 4 ||
+                (pin >= 12 && pin <= 15) ||
+                (pin >= 25 && pin <= 27) ||
+                (pin >= 32 && pin <= 39) )
+                { return true; } else { return false;}
+              break;
+
+      default:
+        return false;
+         break;
+  }
+}
