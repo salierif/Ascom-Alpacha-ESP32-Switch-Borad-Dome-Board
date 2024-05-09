@@ -79,7 +79,7 @@ void switchWebServer(){
             Config.save.switches.restartNeeded = true;
             request->send(200, "application/json", "{\"reboot\": \"1\"}");
         } else {
-            request->send(200, "application/json", "{\"accept\": \"ok\"}");
+            request->send(200, "application/json", "{\"accept\": \"1\"}");
         }
 
     });

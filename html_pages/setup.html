@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8" />
@@ -55,18 +56,18 @@
 
       <div class="tab-content" x-show="open" x-transition>
         <div>
-          <p>Pin Start Shutter: <input type="number" x-on:change="validatePinNumber($event)" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinstart"/></p>
-          <p>Pin Halt Shutter: <input type="number" x-on:change="validatePinNumber($event)" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinhalt"/></p>
-          <p>Pin Shutter Open: <input type="number" x-on:change="validatePinNumber($event)" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinopen"/></p>
-          <p>Pin Shutter Close: <input type="number" x-on:change="validatePinNumber($event)" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="dome.pinclose"/></p>
+          <p>Pin Start Shutter: <input type="number" x-on:change="validatePinNumber($event)"  x-model="dome.pinstart"/></p>
+          <p>Pin Halt Shutter: <input type="number" x-on:change="validatePinNumber($event)"  x-model="dome.pinhalt"/></p>
+          <p>Pin Shutter Open: <input type="number" x-on:change="validatePinNumber($event)"  x-model="dome.pinopen"/></p>
+          <p>Pin Shutter Close: <input type="number" x-on:change="validatePinNumber($event)"  x-model="dome.pinclose"/></p>
       </div>
         <div>
-            <p>Timeout Posizionamento: <input type="number" id="dometout" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.tout" x-model="dome.tout"/> Sec.</p>
+            <p>Timeout Posizionamento: <input type="number" id="dometout"  x-bind:value="dome.tout" x-model="dome.tout"/> Sec.</p>
         </div>
         <div>
           <p class="pt-2">Abilita chiusura in caso di mancata connessione: <input type="checkbox" id="dome.enautoclose" class="bg-gray-100 p-2 text-gray-500" x-bind:value="dome.enautoclose" x-model="dome.enautoclose"/> </p>
           <p class="text-xs italic">In caso di mancate richieste da parte dei driver ascom o portale web, lo shutter si chiude automaticamente dopo un tot tempo.</p>
-        <p>Tempo di inattività: <input type="number" id="domeautoclose" class="bg-gray-100 p-2 text-gray-800 h-5" x-bind:value="dome.autoclose" x-model="dome.autoclose"/> Min.</p>
+        <p>Tempo di inattività: <input type="number" id="domeautoclose"  x-bind:value="dome.autoclose" x-model="dome.autoclose"/> Min.</p>
         </div>
         <div class="pt-2">
             <button @click="saveDomeSetting()" class="button button_green">Salva</button>
@@ -92,7 +93,7 @@
 
         <div class="tab-content" x-show="open" x-transition>
           <div>
-            <p>Pin: <input x-on:change="validatePinNumber($event)" type="number" id="coverpin" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="cover.pin"/></p>
+            <p>Pin: <input x-on:change="validatePinNumber($event)" type="number" id="coverpin"  x-model="cover.pin"/></p>
         </div>
 
           <div class="pt-2">
@@ -119,8 +120,8 @@
 
         <template  x-for="(swi, index) in switches" >
             <div class="my-2 py-2 px-2 rounded-md bg-slate-900">
-                <p class="pt-2">Nome: <input type="text" x-on:change.debounce="validateString($event)" x-model="swi.name" class="bg-gray-100 p-2 text-gray-800 h-5" maxlength="32"/></p>
-                <p class="pt-2">Descrizione: <input type="text" x-on:change.debounce="validateString($event)" x-model="swi.desc" class="bg-gray-100 p-2 text-gray-800 h-5" maxlength="32"/> </p>
+                <p class="pt-2">Nome: <input type="text" x-on:change.debounce="validateString($event)" x-model="swi.name"  maxlength="32"/></p>
+                <p class="pt-2">Descrizione: <input type="text" x-on:change.debounce="validateString($event)" x-model="swi.desc"  maxlength="32"/> </p>
                 <div class="flex">
                   <p class="pt-2">Tipo: </p>
                   <select class="text-gray-800 px-2" x-model="swi.type">
@@ -131,7 +132,7 @@
                     <option id="4" value="4">Analog Input</option>
                   </select>
                 </div>
-                <p class="pt-2">Pin: <input x-on:change="validatePinNumber($event)" x-model="swi.pin" type="number" id="dometout" min="1" max="39" class="bg-gray-100 p-2 text-gray-800 h-5"/></p>
+                <p class="pt-2">Pin: <input x-on:change="validatePinNumber($event)" x-model="swi.pin" type="number" id="dometout" min="1" max="39" /></p>
                 <button @click="removePin(index)" class=" mt-4 button button_red">Rimuovi</button>
             </div>
         </template>
@@ -148,7 +149,7 @@
     </div>
     </template>
     <!-- Ascom-->
-
+<!--
     <div class="main-tab bg-slate-600"
       x-data="{open:false}"
       >
@@ -161,8 +162,8 @@
       <div class="tab-content" x-show="open" x-transition>
         <div>
           <p>Remote port is usually 32227! if you changed from Ascom software, you know the port you need!<br> Alpaca port is the port from the request will arrived and sended from this borad to the remote port.<br>Change this setting only if you really need it.<br></p>
-          <p>Remote Port: <input type="number" id="ascomremotePort" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="board.remotePort"/></p>
-          <p>Alpaca Port: <input type="number" id="ascomboardPort" class="bg-gray-100 p-2 text-gray-800 h-5" x-model="board.alpacaPort"/></p>
+          <p>Remote Port: <input type="number" id="ascomremotePort"  x-model="board.alpRemPort"/></p>
+          <p>Alpaca Port: <input type="number" id="ascomboardPort"  x-model="board.alpPort"/></p>
       </div>
 
         <div class="pt-2">
@@ -172,7 +173,7 @@
 
       </div>
     </div>
-
+-->
 
     <template x-if="relodRequest">
       <div class="fixed top-0 left-0 h-full w-full backdrop-blur-sm flex align-middle items-center">
@@ -240,7 +241,7 @@
         },
 
         getDomeConfig(){
-          fetch('http://172.20.10.5/api/dome-getconfig')
+          fetch('/api/dome-getconfig')
           .then(response => response.json())
           .then(response => {
             this.dome = response.dome;
@@ -248,7 +249,8 @@
         },
 
         getSwitchConfig(){
-          fetch('http://172.20.10.5/api/switch-getconfig')
+          this.switches = []
+          fetch('/api/switch-getconfig')
           .then(response => response.json())
           .then(response => {
             response.switches.forEach((element,index) => (
@@ -258,7 +260,7 @@
         },
 
         getCoverCConfig(){
-          fetch('http://172.20.10.5/api/coverc-getconfig')
+          fetch('/api/coverc-getconfig')
           .then(response => response.json())
           .then(response => {
             this.cover = response.cover;
@@ -266,11 +268,10 @@
         },
         
         updateData(){
-          fetch('http://172.20.10.5/get-config')
+          fetch('/get-config')
           .then(response => response.json())
           .then(response => {
-            this.board.remotePort = response.alpRemPort;
-            this.board.alpacaPort = response.alpPort;
+            this.board = response.board;
             if (response.dome) { this.exist.dome = true,this.getDomeConfig()}
             if (response.switch) {this.exist.switch = true,this.getSwitchConfig()}
             if (response.cover) {this.exist.coverc = true,this.getCoverCConfig()}
@@ -282,11 +283,12 @@
         validatePinNumber(event){
             let ionumber = parseInt(event.target.value);
             if (this.unusablePinForInput.includes(ionumber)){
-              this.addToast({type:"error", text:"PIN " + ionumber + " NON UTILIZZABILE"})
+              this.addToast({type:"error", text:"PIN " + ionumber + " UNUSABLE"})
             } else if (this.unusablePinForOutput.includes(ionumber)){
-              this.addToast({type:"info", text:"Il pin: " + ionumber + " non può essere utilizzato come uscita (solo avvertimento)"})
+              this.addToast({type:"info", text:"The pin: " + ionumber + " cannot be used as output (warning)"})
             }
         },
+        
         saveDomeSetting(){
             this.dome.autoclose = parseInt(this.dome.autoclose);
             this.dome.tout = parseInt(this.dome.tout);
@@ -295,77 +297,118 @@
             this.dome.pinclose = parseInt(this.dome.pinclose);
             this.dome.pinopen = parseInt(this.dome.pinopen);
             if(this.unusablePinForInput.includes(this.dome.pinopen)){
-              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinopen + " NON UTILIZZABILE come Input"});
+              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinopen + "cannot be used as input"});
               return;
             }
             if(this.unusablePinForInput.includes(this.dome.pinclose)){
-              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinclose + " NON UTILIZZABILE come Input"});
+              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinclose + " cannot be used as input"});
               return;
             }
             if(this.unusablePinForOutput.includes(this.dome.pinstart)){
-              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinstart + " NON UTILIZZABILE come Output"});
+              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinstart + " cannot be used as output"});
               return;
             }
             if(this.unusablePinForOutput.includes(this.dome.pinhalt)){
-              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinhalt + " NON UTILIZZABILE come Output"});
+              this.addToast({type:"error", text:"Dome Validation Error, PIN " + this.dome.pinhalt + " cannot be used as output"});
               return;
             }
-            fetch('http://172.20.10.5/api/dome-saveconfig',{ 
+            fetch('/api/dome-saveconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.dome)
             })
             .then(response => response.json())
-            .then(response => { if (response.reboot){this.pageRefresh();}});
+            .then(response => { if (response.reboot){this.pageRefresh();} else { this.getDomeConfig();this.addToast({type:"success", text:"Dome Saved."})}});
         },
+
         saveCoverSetting(){
             this.cover.pin = parseInt(this.cover.pin);
             if(this.unusablePinForOutput.includes(this.cover.pin)){
-              this.addToast({type:"error", text:"CoverCalib Validation Error, PIN " + this.cover.pin + " NON UTILIZZABILE come Output"});
+              this.addToast({type:"error", text:"CoverCalib Validation Error, PIN " + this.cover.pin + " cannot be used as output"});
               return;
             }
-            fetch('http://172.20.10.5/api/coverc-setconfig',{ 
+            fetch('/api/coverc-setconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.cover)
             })
             .then(response => response.json())
-            .then(response => { if (response.reboot){this.pageRefresh();}});
+            .then(response => { 
+              if (response.reboot){
+                this.pageRefresh();
+                return
+              }
+              if (response.accept){
+                this.addToast({type:"success", text:"Cover Saved."})
+              }
+            });
         },
+
         savePinSetting(){
-          fetch('http://172.20.10.5/api/switch-saveconfig',{ 
+          let error;
+
+          this.switches.forEach((element,index) => {
+
+              if(element.type===0 || element.type > 4){
+                  setTimeout(() => {this.addToast({type:"error", text:"SWITCH " + index + " - WRONG TYPE"})}, 1);
+                  error = true;
+                  return
+              }
+
+              if((element.type===1 || element.type===3) && this.unusablePinForOutput.includes(parseInt(element.pin)) ){
+                  error = true;
+                  setTimeout(() => {this.addToast({type:"error", text:"SWITCH " + index + " - pin "+ element.pin +" cannot be used as output"})}, 1);
+                  return
+              }
+
+              if (element.type === 2 && this.unusablePinForInput.includes(parseInt(element.pin)) ){
+                  error = true;
+                  setTimeout(() => {this.addToast({type:"error", text:"SWITCH " + index + " - pin "+ element.pin +" cannot be used as input"})}, 1);
+                  return
+              }
+          })
+
+          if(error){ 
+            setTimeout(() => {this.addToast({type:"error", text:"SWITCH Validation Error"})}, 1);
+            return; 
+          }
+          fetch('/api/switch-saveconfig',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.switches)
             })
             .then(response => response.json())
-            .then(response => { if (response.reboot){this.pageRefresh();}});
+            .then(response => { 
+              if (response.reboot){
+                this.pageRefresh();
+              }
+              if (response.accept){
+                this.getSwitchConfig();
+                this.addToast({type:"success", text:"Switch Saved."})
+              }
+              if (response.error){
+                this.getSwitchConfig();
+                this.addToast({type:"error", text:"Data not valid."})
+              }
+            });
         },
 
-
         saveBoardSetting(){
-          fetch('http://172.20.10.5/api/switch-saveconfig',{ 
+          
+          fetch('/save-config',{ 
               method: 'POST',
               headers: {"Content-Type": "application/json",},
               body: JSON.stringify(this.board)
             })
             .then(response => response.json())
-            .then(response => { if (response.reboot){this.pageRefresh();}});
+            .then(response => { if (response.reboot){this.pageRefresh();} else this.addToast({type:"info", text:"Saved."})});
         },
 
 
         
-        addPin(){if(this.switches.length < 16){ this.switches.push({name: '',desc: '',type: 0,pin: 0});} else { console.error("Limite Raggiunto")}},
+        addPin(){if(this.switches.length < 16){ this.switches.push({name: '',desc: '',type: 0,pin: 0});} else { this.addToast({type:"error", text:"CANNOT ADD MORE SWITCH"})}},
         removePin(index) {this.switches.splice(index, 1);},
 
-        ioPinError(io){
-          pinError = 1;
-          pinIdError = io;
-          setTimeout(function(){
-                      pinError = 0;
-                      pinIdError = 0; 
-                    }, 2000);
-        },
         pageRefresh(){
           this.relodRequest = 1;
                     setTimeout(function(){

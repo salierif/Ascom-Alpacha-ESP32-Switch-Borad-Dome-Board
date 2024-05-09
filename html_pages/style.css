@@ -29,6 +29,14 @@ h3,h4,h5,h6
   @apply pt-10 pb-4 text-2xl font-bold;
 }
 
+p{
+  @apply my-2
+}
+
+input{
+  @apply bg-gray-100 px-2 py-4 text-gray-800 h-5 rounded-sm focus:bg-slate-300 focus:border-blue-500
+}
+
 .main-tab
 {
   @apply flex mx-auto mx-4 my-4 py-4 px-4 flex-col
@@ -51,9 +59,8 @@ h3,h4,h5,h6
 }
 
 .button{
-  @apply px-5 py-2 rounded-sm
+  @apply px-5 py-2 
 }
-
 .button_green
 {
   @apply  bg-green-600 

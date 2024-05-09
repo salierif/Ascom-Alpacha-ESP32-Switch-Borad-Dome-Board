@@ -1,31 +1,14 @@
 #ifndef CONFIGURATION
 #define CONFIGURATION
 
-void initBoardConfig(){
-    JsonDocument doc;
-    File file = SPIFFS.open("/config.txt", FILE_READ);
-    if (!file) {
-        Serial.println("Reading Board config error");
-        return;
-    }
-    DeserializationError error = deserializeJson(doc, file);
-    if(error){
-        Serial.print(F("deserializeJson() failed: "));
-        Serial.println(error.c_str());
-        return;
-    }
-    Config.alpacaPort.remotePort = doc["alpacaremport"];
-    Config.alpacaPort.alpacaPort = doc["alpacaboardport"];
-    file.close();
-    Config.read.dome.isValid = true;
-}
+
 
 void saveBoardConfig(){
     String datasetup;
     JsonDocument doc;
 
-    doc["alpacaremport"] = Config.alpacaPort.remotePort;
-    doc["alpacaboardport"] = Config.alpacaPort.alpacaPort;
+    doc["alpRemPort"] = Config.alpacaPort.remotePort;
+    doc["alpPort"] = Config.alpacaPort.alpacaPort;
 
     serializeJson(doc, datasetup);
     File file = SPIFFS.open("/config.txt", FILE_WRITE);

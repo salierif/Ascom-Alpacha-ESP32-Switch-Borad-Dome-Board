@@ -27,7 +27,7 @@ void coverCWebServer(){
         JsonDocument doc;
         doc = json.as<JsonObject>();
         if (Config.coverC.pin == doc["pin"]){
-            request->send(200, "application/json", "{\"accept\": \"ok\"}");
+            request->send(200, "application/json", "{\"accept\": \"1\"}");
         } else {
             Config.coverC.pin = doc["pin"];
             Config.save.coverC.execute = true;

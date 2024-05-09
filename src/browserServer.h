@@ -18,10 +18,6 @@ void browserServer(){
         request->send(SPIFFS, "/setup.html", "text/html");
     });
 
-    server.on("/setup.txt", HTTP_GET, [](AsyncWebServerRequest * request) {
-        request->send(SPIFFS, "/setup.txt", "text/plain");
-    });
-
     server.on("/status",                HTTP_GET, [](AsyncWebServerRequest *request) {
         AsyncResponseStream *response = request->beginResponseStream("application/json");
         response->printf("{");
@@ -78,23 +74,44 @@ void browserServer(){
         #else
             response->printf("0");
         #endif
-        response->printf(",\"alpRemPort\":");
+        response->printf(",\"board\":{\"alpRemPort\":");
         response->print(Config.alpacaPort.remotePort);
         response->printf(",\"alpPort\":");
         response->print(Config.alpacaPort.alpacaPort);
-        response->print("}");
+        response->print("}}");
         request->send(response);
     });
 
-    AsyncCallbackJsonWebHandler *boardcfg = new AsyncCallbackJsonWebHandler("/set-config", [](AsyncWebServerRequest * request, JsonVariant & json) {
+    AsyncCallbackJsonWebHandler *boardcfg = new AsyncCallbackJsonWebHandler("/save-config", [](AsyncWebServerRequest * request, JsonVariant & json) {
+        bool reboot = false;
         JsonDocument doc;
         doc = json.as<JsonObject>();
-        
-        request->send(200, "application/json", "{\"reboot\": \"1\"}");
-        
+        int remPort = doc["alpRemPort"].as<int>();
+        int alpacaPort = doc["alpPort"].as<int>();
+
+        if (remPort > 500 && alpacaPort> 500){
+            if(Config.alpacaPort.remotePort != remPort){
+                reboot = true;
+            }
+            Config.alpacaPort.remotePort = remPort;
+            if(Config.alpacaPort.alpacaPort != alpacaPort){
+                reboot = true;
+            }
+            Config.alpacaPort.alpacaPort = alpacaPort;
+
+            Config.save.board.execute = true;
+            if (reboot){
+                request->send(200, "application/json", "{\"reboot\": \"1\"}");
+            } else {
+                request->send(200, "application/json", "{\"accept\": \"1\"}");
+            }
+            return;
+        }
+        request->send(200, "application/json", "{\"error\": \"1\"}");
     });
     server.addHandler(boardcfg);
-
+    
+    server.serveStatic("/config.txt", SPIFFS, "/config.txt");
     server.serveStatic("/favicon.ico", SPIFFS, "/favicon.ico").setCacheControl("max-age=31536000");
     server.serveStatic("/assets/", SPIFFS, "/assets/").setCacheControl("max-age=31536000");
 

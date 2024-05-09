@@ -57,24 +57,24 @@
       >
 
       <div class="tab-header" >
-        <div class="grow">Dome</div>
+        <div class="grow"><b>Dome</b></div>
         <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
       </div>
 
       <div class="tab-content" x-show="open" x-transition>
 
-        <div class="flex text-xl pt-6">Roof State: 
-          <template x-if="dome.actualState === 0"><p>Open</p></template>
-          <template x-if="dome.actualState === 1"><p>Close</p></template>
-          <template x-if="dome.actualState === 2"><p>Opening</p></template>
-          <template x-if="dome.actualState === 3"><p>Closing</p></template>
-          <template x-if="dome.actualState === 4"><p>Error</p></template>
-        </div>
+        <p class="flex text-xl pt-6 pr-2">Roof State: 
+          <template x-if="dome.actualState === 0"><b>Open</b></template>
+          <template x-if="dome.actualState === 1"><b>Close</b></template>
+          <template x-if="dome.actualState === 2"><b>Opening</b></template>
+          <template x-if="dome.actualState === 3"><b>Closing</b></template>
+          <template x-if="dome.actualState === 4"><b>Error</b></template>
+        </p>
         <div class="flex text-xl">Last Command: 
-          <template x-if="dome.lastCommand === 0"><p>Idle</p></template>
-          <template x-if="dome.lastCommand === 1"><p>Opening</p></template>
-          <template x-if="dome.lastCommand === 2"><p>Closing</p></template>
-          <template x-if="dome.lastCommand === 3"><p>HALT</p></template>
+          <template x-if="dome.lastCommand === 0"><b>Idle</b></template>
+          <template x-if="dome.lastCommand === 1"><b>Opening</b></template>
+          <template x-if="dome.lastCommand === 2"><b>Closing</b></template>
+          <template x-if="dome.lastCommand === 3"><b>HALT</b></template>
         </div>
         <div class="grid grid-flow-row grid-rows-3 mx-auto gap-10 pt-6">
             <button @click="shutterCmd(1)" class="px-12 py-2 bg-green-600 w-full" >Apri</button>
@@ -94,12 +94,13 @@
     </template>
 
     <!-- COVER CALIBRATOR -->
+    <template x-if="exist.coverc">
     <div class="main-tab bg-slate-600"
       x-data="{open:false}"
       >
 
       <div class="tab-header" >
-        <div class="grow">Cover Calibrator</div>
+        <div class="grow"><b>Cover Calibrator</b></div>
         <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
       </div>
 
@@ -110,76 +111,78 @@
       </div>
 
     </div>
+    </template>
 
     <!--SWITCH-->
-    <div class="main-tab bg-slate-600"
-      x-data="{open:false}">
+    <template x-if="exist.switch">
+      <div class="main-tab bg-slate-600"
+        x-data="{open:false}">
 
-    <div class="tab-header" >
-      <div class="grow">Switch</div>
-      <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
-    </div>
-
-    
-    <div class="tab-content pt-4" x-show="open" x-transition>
-      <div class="grid sm:grid-cols-2 gap-4 lg:grid-cols-3 items-stretch text-center">
-        <template  x-for="swi in switches" :key="swi.id">
-          <div class="card_container">
-            <p class="card_title" x-text="swi.name"></p>
-            <p class="card_comment" x-text="swi.description"></p>
-
-            <div class="card_command">
-
-              <template x-if="swi.type == 3">
-                <input @change="setAnalogSwValue(swi.id,$event)" type="range" x-bind:min="swi.min" x-bind:max="swi.max" x-bind:value="swi.actualValue" class="py-2" />
-              </template>
-  
-              <template x-if="swi.type == 1">
-                <div class="flex justify-center">
-                  <button @click="setDigitalSwValue(swi.id,1)" class="button button_green">ON</button>
-                  <button @click="setDigitalSwValue(swi.id,0)" class="button ml-5 button_red">OFF</button>
-                </div>
-              </template>
-  
-              <template x-if="swi.type == 4">
-                <input type="range" x-bind:min="swi.min" x-bind:max="swi.max" x-bind:value="swi.actualValue" class="py-2 cursor-not-allowed" />
-              </template>
-  
-              <template x-if="swi.type == 2">
-                <div class="flex justify-center">
-                  <button class="button bg-slate-500 cursor-not-allowed">ON</button>
-                  <button class="button bg-slate-500 ml-5 cursor-not-allowed">OFF</button>
-                </div>
-              </template>
-
-
-            </div>
-
-            <p>Valore Attuale:</p>
-              <template x-if="swi.type >= 2"> 
-                <div class="flex w-full flex-col justify-around ">
-                  <p class="font-semibold" x-text="swi.actualValue"></p>
-                  <p>Min: <span x-text="swi.actualValue"></span> Max: <span x-text="swi.max"></span></p>
-                </div> 
-                
-              </template>
-
-              <template x-if="swi.type <= 1">
-                <div class="w-full">
-                  <div x-show="swi.actualValue" class="card_actual_value  bg-green-600">ON</div>
-                  <div x-show="!swi.actualValue" class="card_actual_value bg-red-600">OFF</div>
-                </div>
-              </template>
-            
-            
-            <p :id="$id('error-message')" class="py-2 bg-red-600 hidden">fdbdb</p>
-          </div>
-        </template>
-
+      <div class="tab-header" >
+        <div class="grow"><b>Switch</b></div>
+        <div><button @click="open = ! open"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#fff" fill="#fff"><path d="M12 3v2h5.586L5 17.586V12H3v9h9v-2H6.414L19 6.414V12h2V3h-9z"/></svg></button></div>
       </div>
-    </div>
-    </div>
 
+      
+      <div class="tab-content pt-4" x-show="open" x-transition>
+        <div class="grid sm:grid-cols-2 gap-4 lg:grid-cols-3 items-stretch text-center">
+          <template  x-for="swi in switches" :key="swi.id">
+            <div class="card_container">
+              <p class="card_title" x-text="swi.name"></p>
+              <p class="card_comment" x-text="swi.description"></p>
+
+              <div class="card_command">
+
+                <template x-if="swi.type == 3">
+                  <input @change="setAnalogSwValue(swi.id,$event)" type="range" x-bind:min="swi.min" x-bind:max="swi.max" x-bind:value="swi.actualValue" class="py-2" />
+                </template>
+    
+                <template x-if="swi.type == 1">
+                  <div class="flex justify-center">
+                    <button @click="setDigitalSwValue(swi.id,1)" class="button button_green">ON</button>
+                    <button @click="setDigitalSwValue(swi.id,0)" class="button ml-5 button_red">OFF</button>
+                  </div>
+                </template>
+    
+                <template x-if="swi.type == 4">
+                  <input type="range" x-bind:min="swi.min" x-bind:max="swi.max" x-bind:value="swi.actualValue" class="py-2 cursor-not-allowed" />
+                </template>
+    
+                <template x-if="swi.type == 2">
+                  <div class="flex justify-center">
+                    <button class="button bg-slate-500 cursor-not-allowed">ON</button>
+                    <button class="button bg-slate-500 ml-5 cursor-not-allowed">OFF</button>
+                  </div>
+                </template>
+
+
+              </div>
+
+              <p>Valore Attuale:</p>
+                <template x-if="swi.type >= 2"> 
+                  <div class="flex w-full flex-col justify-around ">
+                    <p class="font-semibold" x-text="swi.actualValue"></p>
+                    <p>Min: <span x-text="swi.actualValue"></span> Max: <span x-text="swi.max"></span></p>
+                  </div> 
+                  
+                </template>
+
+                <template x-if="swi.type <= 1">
+                  <div class="w-full">
+                    <div x-show="swi.actualValue" class="card_actual_value  bg-green-600">ON</div>
+                    <div x-show="!swi.actualValue" class="card_actual_value bg-red-600">OFF</div>
+                  </div>
+                </template>
+              
+              
+              <p :id="$id('error-message')" class="py-2 bg-red-600 hidden">fdbdb</p>
+            </div>
+          </template>
+
+        </div>
+      </div>
+      </div>
+    </template>
       <!--STATISTIC-->
       <div class="main-tab bg-slate-600"
       x-data="{open:false}"
@@ -233,7 +236,7 @@
 
         getDomeData(){
           if (this.exist.dome){
-            fetch('http://172.20.10.5/api/dome')
+            fetch('/api/dome')
             .then(response => response.json())
             .then(response => {
               this.dome = response.dome;
@@ -247,7 +250,7 @@
 
         getSwitchData(){
           if (this.exist.switch){ 
-          fetch('http://172.20.10.5/api/switch')
+          fetch('/api/switch')
             .then(response => response.json())
             .then(response => {
               this.switches = response.switches;
@@ -261,7 +264,7 @@
 
         getCoverData(){
           if (this.exist.coverc) {
-            fetch('http://172.20.10.5/api/coverc')
+            fetch('/api/coverc')
             .then(response => response.json())
             .then(response => {
               this.cover = response.cover;
@@ -275,7 +278,7 @@
           },
 
         updateData(){
-          fetch('http://172.20.10.5/status')
+          fetch('/status')
             .then(response => response.json())
             .then(response => {
               this.upTime = this.toHoursAndMinutes(response.upTime);
@@ -287,7 +290,7 @@
         },
 
         initData(){
-          fetch('http://172.20.10.5/status')
+          fetch('/status')
             .then(response => response.json())
             .then(response => {
               this.exist.dome = response.dome
