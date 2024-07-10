@@ -25,7 +25,7 @@ void SwitchAlpacaDevice(){
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
     AlpacaNoErrorSchema(response);
-    response->printf("%sTrue}",Alp_Value,Dome.ShutterState);
+    response->printf("%strue}",Alp_Value,Dome.ShutterState);
     request->send(response);
   });
 
@@ -104,9 +104,9 @@ void SwitchAlpacaDevice(){
     } else {
       AlpacaNoErrorSchema(response);
       if(Switch[AlpacaData.switches.id].property.type == 1 || Switch[AlpacaData.switches.id].property.type == 3){
-        response->printf("%sTrue}",Alp_Value);
+        response->printf("%strue}",Alp_Value);
       } else {
-        response->printf("%sFalse}",Alp_Value);
+        response->printf("%sfalse}",Alp_Value);
       }
     }
     request->send(response);

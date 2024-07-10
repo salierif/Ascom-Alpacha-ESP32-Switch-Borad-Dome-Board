@@ -43,7 +43,8 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
   String parameter;
   AlpacaData.serverTransactionID++;
   for (int i = 0; i < paramsNr; i++) {
-    AsyncWebParameter* p = request->getParam(i);
+    const AsyncWebParameter* p = request->getParam(i);
+
     parameter = p->name();
     parameter.toLowerCase();
     if (parameter == "clientid") {
