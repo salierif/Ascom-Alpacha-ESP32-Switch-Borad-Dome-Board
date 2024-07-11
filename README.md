@@ -55,6 +55,8 @@ Version 1.2 requred I/O config form the firmware, with version 2.0 you need to d
 
 #### Changelog
 
+💥 3.0.0 - BREACKING NEWS! Now switch, calibrator and dome are module, if you don't plan to use it, you can disable it!, the web page and the discovery will hide it for you. Also pin validation during the setup is better now
+
 💥 2.0.0 - BREACKING NEWS! Now all the board can be setupped by the browser. Dome I/O and Switch setting is now editable from the browser and you can save the confi files.
 Before update write in a memo all your setting.
 
