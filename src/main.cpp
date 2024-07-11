@@ -74,7 +74,7 @@ void setup()
   Serial.println(WiFi.localIP());
 
 
-  if (udp.listen(4567))
+  if (udp.listen(32227))
   {
     Serial.println("Listening for discovery requests...");
     udp.onPacket([](AsyncUDPPacket packet) {
