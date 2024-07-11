@@ -60,6 +60,16 @@ Version 1.2 requred I/O config form the firmware, with version 2.0 you need to d
 💥 2.0.0 - BREACKING NEWS! Now all the board can be setupped by the browser. Dome I/O and Switch setting is now editable from the browser and you can save the confi files.
 Before update write in a memo all your setting.
 
+
+What's new in version 3.0.0?
+
+Auto Close Dome if anyone is talking with the board (browser or ascom alpacha driver) it's ok
+Switch Cover Calbirator and Dome are modular now, if you don't use you can comment the respective row at the beginning of the main.cpp:
+
+#define DOME
+#define SWITCH
+#define COVERC
+
 What's new in version 2.0.0?
 
 Web pages run now alpine.js and all the js under the hood is rewrited in a modern way.
