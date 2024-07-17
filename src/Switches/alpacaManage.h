@@ -8,7 +8,7 @@ void SwitchAlpacaManage(){
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
     AlpacaNoErrorSchema(response);
-    response->printf("%s\"StefanoTeslaSwitch\"}",Alp_Value);
+    response->printf("%s\"NINAHubSwitch\"}",Alp_Value);
     request->send(response);
   });
 
@@ -26,7 +26,7 @@ void SwitchAlpacaManage(){
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
     AlpacaNoErrorSchema(response);
-    response->printf("%s\"StefanoTesla Switch\"}",Alp_Value);
+    response->printf("%s\"NINAHub Switch\"}",Alp_Value);
     request->send(response);
   });
 
@@ -35,7 +35,7 @@ void SwitchAlpacaManage(){
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
     AlpacaNoErrorSchema(response);
-    response->printf("%s\"StefanoTesla Dome response on the fly\"}",Alp_Value);
+    response->printf("%s\"NINAHub Dome response on the fly\"}",Alp_Value);
     request->send(response);
   });
 

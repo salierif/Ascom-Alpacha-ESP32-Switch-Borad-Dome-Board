@@ -43,7 +43,7 @@ struct coverCalibrationSetting {
 
 struct AlpacaPortsStruct{
   unsigned int remotePort = 32227;
-  unsigned int alpacaPort = 4567;
+  unsigned int alpacaPort = 11111;
 };
 
 struct ConfigStruct{

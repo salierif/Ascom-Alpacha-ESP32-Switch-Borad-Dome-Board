@@ -28,7 +28,7 @@ void CoverAlpacaManage()
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
     AlpacaNoErrorSchema(response);
-    response->print(F("\"Value\":\"StefanoTesla CoverCalibrator\"}"));
+    response->print(F("\"Value\":\"NINAHub CoverCalibrator\"}"));
     request->send(response); 
   });
 
@@ -37,7 +37,7 @@ void CoverAlpacaManage()
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
     AlpacaNoErrorSchema(response);
-    response->print(F("\"Value\":\"StefanoTesla CoverCalibrator response on the fly\"}"));
+    response->print(F("\"Value\":\"NINAHub CoverCalibrator response on the fly\"}"));
     request->send(response);
   });
 
@@ -64,7 +64,7 @@ void CoverAlpacaManage()
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     AlpacaHeaderSchema(response,AlpacaData);
     AlpacaNoErrorSchema(response);
-    response->print(F("\"Value\":\"StefanoTesla Cover Calibrator\"}"));
+    response->print(F("\"Value\":\"NINAhub Cover Calibrator\"}"));
     request->send(response);
   });
   

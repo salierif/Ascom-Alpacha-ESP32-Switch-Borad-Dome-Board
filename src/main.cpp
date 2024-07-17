@@ -1,6 +1,6 @@
-#define DOME
+//#define DOME
 #define SWITCH
-#define COVERC
+//#define COVERC
 
 #include <ArduinoJson.h>
 #include <WiFi.h>
@@ -18,7 +18,7 @@
 #include <ElegantOTA.h>
 
 AsyncWebServer server(80);
-AsyncWebServer Alpserver(4567);
+AsyncWebServer Alpserver(11111);
 
 #include "Alpaca/AlpacaManageFunction.h"
 #ifdef DOME
@@ -87,7 +87,7 @@ void setup()
       {
         return;
       }
-      packet.printf("{\"alpacaport\": 4567}");
+      packet.printf("{\"alpacaport\": 11111}");
     });
   }
 

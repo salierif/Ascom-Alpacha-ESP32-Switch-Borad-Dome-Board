@@ -19,7 +19,7 @@ Alpserver.on("/api/v1/dome/0/description",                                      
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   AlpacaHeaderSchema(response,AlpacaData);
   AlpacaNoErrorSchema(response);
-  response->printf("%s\"StefanoTesla Dome\"}",Alp_Value);
+  response->printf("%s\"NINAHub Dome\"}",Alp_Value);
   request->send(response);
 });
 
@@ -28,7 +28,7 @@ Alpserver.on("/api/v1/dome/0/driverinfo",                                       
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   AlpacaHeaderSchema(response,AlpacaData);
   AlpacaNoErrorSchema(response);
-  response->printf("%s\"StefanoTesla Dome response on the fly\"}",Alp_Value);
+  response->printf("%s\"NINAHub Dome response on the fly\"}",Alp_Value);
   request->send(response);
 });
 
@@ -57,7 +57,7 @@ Alpserver.on("/api/v1/dome/0/name",                                             
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   AlpacaHeaderSchema(response,AlpacaData);
   AlpacaNoErrorSchema(response);
-  response->printf("%s\"StefanoTeslaDome\"}",Alp_Value);
+  response->printf("%s\"NINAHub\"}",Alp_Value);
   request->send(response);
 });
 

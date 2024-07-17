@@ -44,7 +44,6 @@ void GetAlpArguments(AsyncWebServerRequest *request ) {
   AlpacaData.serverTransactionID++;
   for (int i = 0; i < paramsNr; i++) {
     const AsyncWebParameter* p = request->getParam(i);
-
     parameter = p->name();
     parameter.toLowerCase();
     if (parameter == "clientid") {
@@ -147,7 +146,7 @@ void AlpacaManager(){
   Alpserver.on("/management/v1/description",                HTTP_GET, [](AsyncWebServerRequest *request) {
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     GetAlpArguments(request);
-    response->print(F("{\"Value\": {\"ServerName\": \"StefanoTesla Alpaca Device\",\"Manufacturer\":\"The Stefano Tesla Company\",\"ManufacturerVersion\":\"v2.0.0\",\"Location\":\"Empoli, IT\"},"));
+    response->print(F("{\"Value\": {\"ServerName\": \"NINAHub Alpaca Device\",\"Manufacturer\":\"The NINAHub Company\",\"ManufacturerVersion\":\"v1.0.0\",\"Location\":\"CA, US\"},"));
   response->printf("%s%d,%s%d}",
                                 Alp_CliTraId,AlpacaData.clientTransactionID,
                                 Alp_SerTraId,AlpacaData.serverTransactionID
@@ -159,9 +158,9 @@ void AlpacaManager(){
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     GetAlpArguments(request);
     response->print(F("{\"Value\":["));
-    response->print(F("{\"DeviceName\": \"TeslaDome\",\"DeviceType\": \"Dome\",\"DeviceNumber\": 0,\"UniqueID\":\"e989c9b6-ba0f-4834-b299-79a629f2ee59\"},"));
-    response->print(F("{\"DeviceName\":\"TeslaSwitch\",\"DeviceType\":\"Switch\",\"DeviceNumber\":0,\"UniqueID\":\"d93f20fb-aa85-49ed-8799-9f50c0969ede\"},"));
-    response->print(F("{\"DeviceName\":\"TeslaCoverCalibratior\",\"DeviceType\":\"CoverCalibrator\",\"DeviceNumber\":0,\"UniqueID\":\"35672690-40bf-4165-b44e-d59c2c524f11\"}"));
+    response->print(F("{\"DeviceName\": \"NINAHubDome\",\"DeviceType\": \"Dome\",\"DeviceNumber\": 0,\"UniqueID\":\"e989c9b6-ba0f-4834-b299-79a629f2ee59\"},"));
+    response->print(F("{\"DeviceName\":\"NINAHubSwitch\",\"DeviceType\":\"Switch\",\"DeviceNumber\":0,\"UniqueID\":\"d93f20fb-aa85-49ed-8799-9f50c0969ede\"},"));
+    response->print(F("{\"DeviceName\":\"NINAHubCoverCalibratior\",\"DeviceType\":\"CoverCalibrator\",\"DeviceNumber\":0,\"UniqueID\":\"35672690-40bf-4165-b44e-d59c2c524f11\"}"));
     response->print(F("],"));
     response->printf("%s%d,%s%d",
       Alp_CliTraId,AlpacaData.clientTransactionID,
